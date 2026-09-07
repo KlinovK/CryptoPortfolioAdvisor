@@ -1,0 +1,33 @@
+{
+  "snapshot_id": "12000000-0000-0000-0000-000000000012",
+  "created_at": "2026-09-07T06:00:00Z",
+  "portfolio": {
+    "positions": [
+      {"symbol": "BTC", "amount": "0.01"},
+      {"symbol": "ETH", "amount": "0.1"},
+      {"symbol": "SOL", "amount": "1"},
+      {"symbol": "LINK", "amount": "10"},
+      {"symbol": "USDT", "amount": "500"},
+      {"symbol": "USDC", "amount": "500"}
+    ]
+  },
+  "constraints": {
+    "trading_style": "active",
+    "risk_tolerance": "conservative",
+    "leverage_allowed": false,
+    "additional_monthly_income_usd": "0",
+    "minimum_stable_reserve_usd": "800"
+  },
+  "orders": [
+    {
+      "id": "12000000-0000-0000-0000-000000000013",
+      "symbol": "BTC",
+      "side": "buy",
+      "amount_usd": "100",
+      "target_price": "50000",
+      "status": "open",
+      "created_at": "2026-09-07T05:00:00Z",
+      "resolved_at": null
+    }
+  ]
+}

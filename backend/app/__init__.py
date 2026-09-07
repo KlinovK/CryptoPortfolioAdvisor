@@ -1,0 +1,1 @@
+"""CryptoPortfolioAdvisor backend application."""

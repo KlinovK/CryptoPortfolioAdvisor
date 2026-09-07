@@ -1,0 +1,685 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		AA0000000000000000000200 /* CryptoPortfolioAdvisorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000100 /* CryptoPortfolioAdvisorApp.swift */; };
+		AA0000000000000000000201 /* AppFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000101 /* AppFeature.swift */; };
+		AA0000000000000000000202 /* AppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000102 /* AppView.swift */; };
+		AA0000000000000000000203 /* DashboardFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000103 /* DashboardFeature.swift */; };
+		AA0000000000000000000204 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000104 /* DashboardView.swift */; };
+		AA0000000000000000000205 /* HistoryFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000105 /* HistoryFeature.swift */; };
+		AA0000000000000000000206 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000106 /* HistoryView.swift */; };
+		AA0000000000000000000207 /* AppFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010A /* AppFeatureTests.swift */; };
+		AA0000000000000000000208 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000000000000000000501 /* ComposableArchitecture */; };
+		AA000000000000000000020A /* DomainValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000107 /* DomainValidationError.swift */; };
+		AA000000000000000000020B /* AssetSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010D /* AssetSymbol.swift */; };
+		AA000000000000000000020C /* AssetPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010E /* AssetPosition.swift */; };
+		AA000000000000000000020D /* Portfolio.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000010F /* Portfolio.swift */; };
+		AA000000000000000000020E /* PortfolioSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000110 /* PortfolioSnapshot.swift */; };
+		AA000000000000000000020F /* TradingConstraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000111 /* TradingConstraints.swift */; };
+		AA0000000000000000000210 /* LimitOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000112 /* LimitOrder.swift */; };
+		AA0000000000000000000211 /* PortfolioAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000113 /* PortfolioAction.swift */; };
+		AA0000000000000000000212 /* PortfolioAnalysis.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000114 /* PortfolioAnalysis.swift */; };
+		AA0000000000000000000213 /* DomainModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000115 /* DomainModelTests.swift */; };
+		AA0000000000000000000214 /* DashboardDraftModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000116 /* DashboardDraftModels.swift */; };
+		AA0000000000000000000215 /* DashboardValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000117 /* DashboardValidation.swift */; };
+		AA0000000000000000000216 /* DashboardFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000118 /* DashboardFeatureTests.swift */; };
+		AA0000000000000000000217 /* PortfolioPersistenceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000119 /* PortfolioPersistenceClient.swift */; };
+		AA0000000000000000000218 /* DashboardDraftEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000011A /* DashboardDraftEntity.swift */; };
+		AA0000000000000000000219 /* PortfolioSnapshotEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000011B /* PortfolioSnapshotEntity.swift */; };
+		AA000000000000000000021A /* PersistenceMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000011C /* PersistenceMapper.swift */; };
+		AA000000000000000000021B /* PersistenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000011D /* PersistenceStore.swift */; };
+		AA000000000000000000021C /* DashboardPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000011E /* DashboardPersistenceTests.swift */; };
+		AA000000000000000000021D /* PersistenceStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000011F /* PersistenceStoreTests.swift */; };
+		AA000000000000000000021E /* SnapshotDetailsFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000120 /* SnapshotDetailsFeature.swift */; };
+		AA000000000000000000021F /* SnapshotFinancialFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000121 /* SnapshotFinancialFormatter.swift */; };
+		AA0000000000000000000220 /* SnapshotDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000122 /* SnapshotDetailsView.swift */; };
+		AA0000000000000000000221 /* HistoryFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000123 /* HistoryFeatureTests.swift */; };
+		AA0000000000000000000222 /* SnapshotDetailsFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000124 /* SnapshotDetailsFeatureTests.swift */; };
+		AA0000000000000000000223 /* AnalyzePortfolioRequestDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000125 /* AnalyzePortfolioRequestDTO.swift */; };
+		AA0000000000000000000224 /* PortfolioAnalysisResponseDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000126 /* PortfolioAnalysisResponseDTO.swift */; };
+		AA0000000000000000000225 /* PortfolioAPIMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000127 /* PortfolioAPIMapper.swift */; };
+		AA0000000000000000000226 /* PortfolioAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000128 /* PortfolioAPIClient.swift */; };
+		AA0000000000000000000227 /* PortfolioAnalysisClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000129 /* PortfolioAnalysisClient.swift */; };
+		AA0000000000000000000228 /* PortfolioAnalysisEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000012A /* PortfolioAnalysisEntity.swift */; };
+		AA0000000000000000000229 /* AnalysisDetailsFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000012B /* AnalysisDetailsFeature.swift */; };
+		AA000000000000000000022A /* AnalysisDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000012C /* AnalysisDetailsView.swift */; };
+		AA000000000000000000022B /* Phase6TestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000012D /* Phase6TestFixtures.swift */; };
+		AA000000000000000000022C /* PortfolioAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000012E /* PortfolioAPITests.swift */; };
+		AA000000000000000000022D /* DashboardSubmissionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000012F /* DashboardSubmissionTests.swift */; };
+		AA000000000000000000022E /* AnalysisDetailsFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000130 /* AnalysisDetailsFeatureTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AA0000000000000000000600 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AA0000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA0000000000000000000002;
+			remoteInfo = CryptoPortfolioAdvisor;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		AA0000000000000000000100 /* CryptoPortfolioAdvisorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoPortfolioAdvisorApp.swift; sourceTree = "<group>"; };
+		AA0000000000000000000101 /* AppFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFeature.swift; sourceTree = "<group>"; };
+		AA0000000000000000000102 /* AppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000103 /* DashboardFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardFeature.swift; sourceTree = "<group>"; };
+		AA0000000000000000000104 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000105 /* HistoryFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryFeature.swift; sourceTree = "<group>"; };
+		AA0000000000000000000106 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000107 /* DomainValidationError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainValidationError.swift; sourceTree = "<group>"; };
+		AA0000000000000000000108 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AA0000000000000000000109 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		AA000000000000000000010A /* AppFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFeatureTests.swift; sourceTree = "<group>"; };
+		AA000000000000000000010B /* CryptoPortfolioAdvisor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CryptoPortfolioAdvisor.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA000000000000000000010C /* CryptoPortfolioAdvisorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CryptoPortfolioAdvisorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA000000000000000000010D /* AssetSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetSymbol.swift; sourceTree = "<group>"; };
+		AA000000000000000000010E /* AssetPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetPosition.swift; sourceTree = "<group>"; };
+		AA000000000000000000010F /* Portfolio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Portfolio.swift; sourceTree = "<group>"; };
+		AA0000000000000000000110 /* PortfolioSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioSnapshot.swift; sourceTree = "<group>"; };
+		AA0000000000000000000111 /* TradingConstraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TradingConstraints.swift; sourceTree = "<group>"; };
+		AA0000000000000000000112 /* LimitOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitOrder.swift; sourceTree = "<group>"; };
+		AA0000000000000000000113 /* PortfolioAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioAction.swift; sourceTree = "<group>"; };
+		AA0000000000000000000114 /* PortfolioAnalysis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioAnalysis.swift; sourceTree = "<group>"; };
+		AA0000000000000000000115 /* DomainModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModelTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000116 /* DashboardDraftModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardDraftModels.swift; sourceTree = "<group>"; };
+		AA0000000000000000000117 /* DashboardValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardValidation.swift; sourceTree = "<group>"; };
+		AA0000000000000000000118 /* DashboardFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardFeatureTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000119 /* PortfolioPersistenceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioPersistenceClient.swift; sourceTree = "<group>"; };
+		AA000000000000000000011A /* DashboardDraftEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardDraftEntity.swift; sourceTree = "<group>"; };
+		AA000000000000000000011B /* PortfolioSnapshotEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioSnapshotEntity.swift; sourceTree = "<group>"; };
+		AA000000000000000000011C /* PersistenceMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceMapper.swift; sourceTree = "<group>"; };
+		AA000000000000000000011D /* PersistenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceStore.swift; sourceTree = "<group>"; };
+		AA000000000000000000011E /* DashboardPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardPersistenceTests.swift; sourceTree = "<group>"; };
+		AA000000000000000000011F /* PersistenceStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceStoreTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000120 /* SnapshotDetailsFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotDetailsFeature.swift; sourceTree = "<group>"; };
+		AA0000000000000000000121 /* SnapshotFinancialFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotFinancialFormatter.swift; sourceTree = "<group>"; };
+		AA0000000000000000000122 /* SnapshotDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotDetailsView.swift; sourceTree = "<group>"; };
+		AA0000000000000000000123 /* HistoryFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryFeatureTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000124 /* SnapshotDetailsFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapshotDetailsFeatureTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000125 /* AnalyzePortfolioRequestDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyzePortfolioRequestDTO.swift; sourceTree = "<group>"; };
+		AA0000000000000000000126 /* PortfolioAnalysisResponseDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioAnalysisResponseDTO.swift; sourceTree = "<group>"; };
+		AA0000000000000000000127 /* PortfolioAPIMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioAPIMapper.swift; sourceTree = "<group>"; };
+		AA0000000000000000000128 /* PortfolioAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioAPIClient.swift; sourceTree = "<group>"; };
+		AA0000000000000000000129 /* PortfolioAnalysisClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioAnalysisClient.swift; sourceTree = "<group>"; };
+		AA000000000000000000012A /* PortfolioAnalysisEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioAnalysisEntity.swift; sourceTree = "<group>"; };
+		AA000000000000000000012B /* AnalysisDetailsFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisDetailsFeature.swift; sourceTree = "<group>"; };
+		AA000000000000000000012C /* AnalysisDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisDetailsView.swift; sourceTree = "<group>"; };
+		AA000000000000000000012D /* Phase6TestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase6TestFixtures.swift; sourceTree = "<group>"; };
+		AA000000000000000000012E /* PortfolioAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioAPITests.swift; sourceTree = "<group>"; };
+		AA000000000000000000012F /* DashboardSubmissionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardSubmissionTests.swift; sourceTree = "<group>"; };
+		AA0000000000000000000130 /* AnalysisDetailsFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisDetailsFeatureTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		AA0000000000000000000301 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0000000000000000000208 /* ComposableArchitecture in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000304 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		AA0000000000000000000010 = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000011 /* CryptoPortfolioAdvisor */,
+				AA0000000000000000000019 /* CryptoPortfolioAdvisorTests */,
+				AA000000000000000000001A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000011 /* CryptoPortfolioAdvisor */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000012 /* App */,
+				AA0000000000000000000013 /* Features */,
+				AA0000000000000000000016 /* Domain */,
+				AA0000000000000000000017 /* Data */,
+				AA0000000000000000000018 /* Dependencies */,
+			);
+			path = CryptoPortfolioAdvisor;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000012 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000100 /* CryptoPortfolioAdvisorApp.swift */,
+				AA0000000000000000000101 /* AppFeature.swift */,
+				AA0000000000000000000102 /* AppView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000013 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000014 /* Dashboard */,
+				AA0000000000000000000015 /* History */,
+				AA0000000000000000000020 /* SnapshotDetails */,
+				AA0000000000000000000023 /* AnalysisDetails */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000014 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000103 /* DashboardFeature.swift */,
+				AA0000000000000000000104 /* DashboardView.swift */,
+				AA0000000000000000000116 /* DashboardDraftModels.swift */,
+				AA0000000000000000000117 /* DashboardValidation.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000015 /* History */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000105 /* HistoryFeature.swift */,
+				AA0000000000000000000106 /* HistoryView.swift */,
+			);
+			path = History;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000016 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				AA000000000000000000001B /* Portfolio */,
+				AA000000000000000000001C /* Trading */,
+				AA000000000000000000001D /* Analysis */,
+				AA0000000000000000000107 /* DomainValidationError.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		AA000000000000000000001B /* Portfolio */ = {
+			isa = PBXGroup;
+			children = (
+				AA000000000000000000010D /* AssetSymbol.swift */,
+				AA000000000000000000010E /* AssetPosition.swift */,
+				AA000000000000000000010F /* Portfolio.swift */,
+				AA0000000000000000000110 /* PortfolioSnapshot.swift */,
+			);
+			path = Portfolio;
+			sourceTree = "<group>";
+		};
+		AA000000000000000000001C /* Trading */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000111 /* TradingConstraints.swift */,
+				AA0000000000000000000112 /* LimitOrder.swift */,
+			);
+			path = Trading;
+			sourceTree = "<group>";
+		};
+		AA000000000000000000001D /* Analysis */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000113 /* PortfolioAction.swift */,
+				AA0000000000000000000114 /* PortfolioAnalysis.swift */,
+			);
+			path = Analysis;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000017 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000021 /* API */,
+				AA000000000000000000001E /* Persistence */,
+				AA0000000000000000000108 /* README.md */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000018 /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000119 /* PortfolioPersistenceClient.swift */,
+				AA0000000000000000000129 /* PortfolioAnalysisClient.swift */,
+				AA0000000000000000000109 /* README.md */,
+			);
+			path = Dependencies;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000019 /* CryptoPortfolioAdvisorTests */ = {
+			isa = PBXGroup;
+			children = (
+				AA000000000000000000010A /* AppFeatureTests.swift */,
+				AA0000000000000000000115 /* DomainModelTests.swift */,
+				AA0000000000000000000118 /* DashboardFeatureTests.swift */,
+				AA000000000000000000011E /* DashboardPersistenceTests.swift */,
+				AA000000000000000000011F /* PersistenceStoreTests.swift */,
+				AA0000000000000000000123 /* HistoryFeatureTests.swift */,
+				AA0000000000000000000124 /* SnapshotDetailsFeatureTests.swift */,
+				AA000000000000000000012D /* Phase6TestFixtures.swift */,
+				AA000000000000000000012E /* PortfolioAPITests.swift */,
+				AA000000000000000000012F /* DashboardSubmissionTests.swift */,
+				AA0000000000000000000130 /* AnalysisDetailsFeatureTests.swift */,
+			);
+			path = CryptoPortfolioAdvisorTests;
+			sourceTree = "<group>";
+		};
+		AA000000000000000000001A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				AA000000000000000000010B /* CryptoPortfolioAdvisor.app */,
+				AA000000000000000000010C /* CryptoPortfolioAdvisorTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		AA000000000000000000001E /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				AA000000000000000000001F /* Models */,
+				AA000000000000000000011C /* PersistenceMapper.swift */,
+				AA000000000000000000011D /* PersistenceStore.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		AA000000000000000000001F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AA000000000000000000011A /* DashboardDraftEntity.swift */,
+				AA000000000000000000011B /* PortfolioSnapshotEntity.swift */,
+				AA000000000000000000012A /* PortfolioAnalysisEntity.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000020 /* SnapshotDetails */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000120 /* SnapshotDetailsFeature.swift */,
+				AA0000000000000000000121 /* SnapshotFinancialFormatter.swift */,
+				AA0000000000000000000122 /* SnapshotDetailsView.swift */,
+			);
+			path = SnapshotDetails;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000021 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000022 /* DTO */,
+				AA0000000000000000000127 /* PortfolioAPIMapper.swift */,
+				AA0000000000000000000128 /* PortfolioAPIClient.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000022 /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000125 /* AnalyzePortfolioRequestDTO.swift */,
+				AA0000000000000000000126 /* PortfolioAnalysisResponseDTO.swift */,
+			);
+			path = DTO;
+			sourceTree = "<group>";
+		};
+		AA0000000000000000000023 /* AnalysisDetails */ = {
+			isa = PBXGroup;
+			children = (
+				AA000000000000000000012B /* AnalysisDetailsFeature.swift */,
+				AA000000000000000000012C /* AnalysisDetailsView.swift */,
+			);
+			path = AnalysisDetails;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AA0000000000000000000002 /* CryptoPortfolioAdvisor */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000411 /* Build configuration list for PBXNativeTarget "CryptoPortfolioAdvisor" */;
+			buildPhases = (
+				AA0000000000000000000300 /* Sources */,
+				AA0000000000000000000301 /* Frameworks */,
+				AA0000000000000000000302 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CryptoPortfolioAdvisor;
+			packageProductDependencies = (
+				AA0000000000000000000501 /* ComposableArchitecture */,
+			);
+			productName = CryptoPortfolioAdvisor;
+			productReference = AA000000000000000000010B /* CryptoPortfolioAdvisor.app */;
+			productType = "com.apple.product-type.application";
+		};
+		AA0000000000000000000003 /* CryptoPortfolioAdvisorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA0000000000000000000412 /* Build configuration list for PBXNativeTarget "CryptoPortfolioAdvisorTests" */;
+			buildPhases = (
+				AA0000000000000000000303 /* Sources */,
+				AA0000000000000000000304 /* Frameworks */,
+				AA0000000000000000000305 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA0000000000000000000601 /* PBXTargetDependency */,
+			);
+			name = CryptoPortfolioAdvisorTests;
+			packageProductDependencies = (
+			);
+			productName = CryptoPortfolioAdvisorTests;
+			productReference = AA000000000000000000010C /* CryptoPortfolioAdvisorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AA0000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2650;
+				LastUpgradeCheck = 2650;
+				TargetAttributes = {
+					AA0000000000000000000002 = {
+						CreatedOnToolsVersion = 26.5;
+					};
+					AA0000000000000000000003 = {
+						CreatedOnToolsVersion = 26.5;
+						TestTargetID = AA0000000000000000000002;
+					};
+				};
+			};
+			buildConfigurationList = AA0000000000000000000410 /* Build configuration list for PBXProject "CryptoPortfolioAdvisor" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = AA0000000000000000000010;
+			packageReferences = (
+				AA0000000000000000000500 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
+			);
+			productRefGroup = AA000000000000000000001A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AA0000000000000000000002 /* CryptoPortfolioAdvisor */,
+				AA0000000000000000000003 /* CryptoPortfolioAdvisorTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AA0000000000000000000302 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000305 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		AA0000000000000000000300 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0000000000000000000200 /* CryptoPortfolioAdvisorApp.swift in Sources */,
+				AA0000000000000000000201 /* AppFeature.swift in Sources */,
+				AA0000000000000000000202 /* AppView.swift in Sources */,
+				AA0000000000000000000203 /* DashboardFeature.swift in Sources */,
+				AA0000000000000000000204 /* DashboardView.swift in Sources */,
+				AA0000000000000000000214 /* DashboardDraftModels.swift in Sources */,
+				AA0000000000000000000215 /* DashboardValidation.swift in Sources */,
+				AA0000000000000000000205 /* HistoryFeature.swift in Sources */,
+				AA0000000000000000000206 /* HistoryView.swift in Sources */,
+				AA000000000000000000021E /* SnapshotDetailsFeature.swift in Sources */,
+				AA000000000000000000021F /* SnapshotFinancialFormatter.swift in Sources */,
+				AA0000000000000000000220 /* SnapshotDetailsView.swift in Sources */,
+				AA000000000000000000020A /* DomainValidationError.swift in Sources */,
+				AA000000000000000000020B /* AssetSymbol.swift in Sources */,
+				AA000000000000000000020C /* AssetPosition.swift in Sources */,
+				AA000000000000000000020D /* Portfolio.swift in Sources */,
+				AA000000000000000000020E /* PortfolioSnapshot.swift in Sources */,
+				AA000000000000000000020F /* TradingConstraints.swift in Sources */,
+				AA0000000000000000000210 /* LimitOrder.swift in Sources */,
+				AA0000000000000000000211 /* PortfolioAction.swift in Sources */,
+				AA0000000000000000000212 /* PortfolioAnalysis.swift in Sources */,
+				AA0000000000000000000217 /* PortfolioPersistenceClient.swift in Sources */,
+				AA0000000000000000000218 /* DashboardDraftEntity.swift in Sources */,
+				AA0000000000000000000219 /* PortfolioSnapshotEntity.swift in Sources */,
+				AA000000000000000000021A /* PersistenceMapper.swift in Sources */,
+				AA000000000000000000021B /* PersistenceStore.swift in Sources */,
+				AA0000000000000000000223 /* AnalyzePortfolioRequestDTO.swift in Sources */,
+				AA0000000000000000000224 /* PortfolioAnalysisResponseDTO.swift in Sources */,
+				AA0000000000000000000225 /* PortfolioAPIMapper.swift in Sources */,
+				AA0000000000000000000226 /* PortfolioAPIClient.swift in Sources */,
+				AA0000000000000000000227 /* PortfolioAnalysisClient.swift in Sources */,
+				AA0000000000000000000228 /* PortfolioAnalysisEntity.swift in Sources */,
+				AA0000000000000000000229 /* AnalysisDetailsFeature.swift in Sources */,
+				AA000000000000000000022A /* AnalysisDetailsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000000000000000000303 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AA0000000000000000000207 /* AppFeatureTests.swift in Sources */,
+				AA0000000000000000000213 /* DomainModelTests.swift in Sources */,
+				AA0000000000000000000216 /* DashboardFeatureTests.swift in Sources */,
+				AA000000000000000000021C /* DashboardPersistenceTests.swift in Sources */,
+				AA000000000000000000021D /* PersistenceStoreTests.swift in Sources */,
+				AA0000000000000000000221 /* HistoryFeatureTests.swift in Sources */,
+				AA0000000000000000000222 /* SnapshotDetailsFeatureTests.swift in Sources */,
+				AA000000000000000000022B /* Phase6TestFixtures.swift in Sources */,
+				AA000000000000000000022C /* PortfolioAPITests.swift in Sources */,
+				AA000000000000000000022D /* DashboardSubmissionTests.swift in Sources */,
+				AA000000000000000000022E /* AnalysisDetailsFeatureTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AA0000000000000000000601 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA0000000000000000000002 /* CryptoPortfolioAdvisor */;
+			targetProxy = AA0000000000000000000600 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		AA0000000000000000000400 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		AA0000000000000000000401 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ENABLE_MODULES = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		AA0000000000000000000402 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CPA_BACKEND_BASE_URL = "http://127.0.0.1:8000";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "CryptoPortfolioAdvisor/App/Info-Debug.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.CryptoPortfolioAdvisor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0000000000000000000403 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CPA_BACKEND_BASE_URL = "https://api.example.com";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "CryptoPortfolioAdvisor/App/Info-Release.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.CryptoPortfolioAdvisor;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AA0000000000000000000404 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.CryptoPortfolioAdvisorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CryptoPortfolioAdvisor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CryptoPortfolioAdvisor";
+			};
+			name = Debug;
+		};
+		AA0000000000000000000405 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.CryptoPortfolioAdvisorTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CryptoPortfolioAdvisor.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CryptoPortfolioAdvisor";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		AA0000000000000000000410 /* Build configuration list for PBXProject "CryptoPortfolioAdvisor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000400 /* Debug */,
+				AA0000000000000000000401 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000411 /* Build configuration list for PBXNativeTarget "CryptoPortfolioAdvisor" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000402 /* Debug */,
+				AA0000000000000000000403 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA0000000000000000000412 /* Build configuration list for PBXNativeTarget "CryptoPortfolioAdvisorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA0000000000000000000404 /* Debug */,
+				AA0000000000000000000405 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AA0000000000000000000500 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.26.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AA0000000000000000000501 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA0000000000000000000500 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = AA0000000000000000000001 /* Project object */;
+}

@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-portfolio-advisor.example/schemas/portfolio-analysis.schema.json",
+  "title": "Portfolio Analysis Response",
+  "description": "Structured response for deterministic or backend AI-assisted portfolio analysis.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "analysis_id",
+    "generated_at",
+    "snapshot_id",
+    "analysis_mode",
+    "risk_level",
+    "portfolio_summary",
+    "market_summary",
+    "actions",
+    "asset_analysis",
+    "warnings"
+  ],
+  "properties": {
+    "analysis_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "snapshot_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "analysis_mode": {
+      "type": "string",
+      "enum": [
+        "deterministic",
+        "ai_assisted",
+        "ai_fallback"
+      ]
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["low", "moderate", "high"]
+    },
+    "portfolio_summary": {
+      "$ref": "#/$defs/portfolio_summary"
+    },
+    "market_summary": {
+      "$ref": "#/$defs/market_summary"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/action"
+      }
+    },
+    "asset_analysis": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/asset_analysis"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/warning"
+      }
+    }
+  },
+  "$defs": {
+    "asset_symbol": {
+      "type": "string",
+      "pattern": "^[A-Z0-9][A-Z0-9._-]{0,19}$"
+    },
+    "money": {
+      "type": "string",
+      "description": "A canonical non-negative base-10 decimal string.",
+      "pattern": "^(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "positive_money": {
+      "type": "string",
+      "description": "A canonical positive base-10 decimal string.",
+      "pattern": "^(?=.*[1-9])(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+    },
+    "percentage": {
+      "type": "string",
+      "description": "A canonical base-10 decimal string between 0 and 100.",
+      "pattern": "^(100(?:\\.0+)?|(?:[0-9]|[1-9][0-9])(?:\\.[0-9]+)?)$"
+    },
+    "allocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["asset", "value_usd", "allocation_pct"],
+      "properties": {
+        "asset": {
+          "$ref": "#/$defs/asset_symbol"
+        },
+        "value_usd": {
+          "$ref": "#/$defs/money"
+        },
+        "allocation_pct": {
+          "$ref": "#/$defs/percentage"
+        }
+      }
+    },
+    "portfolio_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total_value_usd",
+        "stable_value_usd",
+        "invested_value_usd",
+        "stable_allocation_pct",
+        "open_buy_orders_usd",
+        "open_sell_orders_usd",
+        "deployable_stable_usd",
+        "allocations"
+      ],
+      "properties": {
+        "total_value_usd": {
+          "$ref": "#/$defs/money"
+        },
+        "stable_value_usd": {
+          "$ref": "#/$defs/money"
+        },
+        "invested_value_usd": {
+          "$ref": "#/$defs/money"
+        },
+        "stable_allocation_pct": {
+          "$ref": "#/$defs/percentage"
+        },
+        "open_buy_orders_usd": {
+          "$ref": "#/$defs/money"
+        },
+        "open_sell_orders_usd": {
+          "$ref": "#/$defs/money"
+        },
+        "deployable_stable_usd": {
+          "$ref": "#/$defs/money"
+        },
+        "allocations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/allocation"
+          }
+        }
+      }
+    },
+    "market_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["as_of", "overview"],
+      "properties": {
+        "as_of": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "overview": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "asset",
+        "type",
+        "side",
+        "price",
+        "amount_usd",
+        "priority",
+        "reason"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "asset": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/asset_symbol"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "buy",
+            "sell",
+            "hold",
+            "monitor",
+            "wait",
+            "place_limit_order",
+            "keep_limit_order",
+            "cancel_limit_order",
+            "rebalance"
+          ]
+        },
+        "side": {
+          "type": ["string", "null"],
+          "enum": ["buy", "sell", null]
+        },
+        "price": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/positive_money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "amount_usd": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/positive_money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "priority": {
+          "type": "integer"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "asset_analysis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "asset",
+        "value_usd",
+        "allocation_pct",
+        "assessment",
+        "recommendation"
+      ],
+      "properties": {
+        "asset": {
+          "$ref": "#/$defs/asset_symbol"
+        },
+        "value_usd": {
+          "$ref": "#/$defs/money"
+        },
+        "allocation_pct": {
+          "$ref": "#/$defs/percentage"
+        },
+        "assessment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recommendation": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "warning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "message", "asset"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["info", "warning", "critical"]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "asset": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/asset_symbol"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+*.db
+*.sqlite
+*.sqlite3
+
+# Xcode and Swift Package Manager
+DerivedData/
+.build/
+*.xcuserstate
+xcuserdata/
+.swiftpm/xcode/package.xcworkspace/xcuserdata/
+
+# Editors
+.idea/
+.vscode/
+*.swp
