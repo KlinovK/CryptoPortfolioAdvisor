@@ -148,7 +148,7 @@ final class DashboardSubmissionTests: XCTestCase {
         XCTAssertEqual(savedSnapshots.value.count, 1)
     }
 
-    func testNetworkRetryReusesSnapshotWithoutSavingDuplicateAndPersistsOneAnalysis() async throws {
+    func testTimeoutRetryReusesSnapshotWithoutSavingDuplicateAndPersistsOneAnalysis() async throws {
         let snapshot = try Phase6TestFixtures.snapshot()
         let analysis = try Phase6TestFixtures.analysis()
         let snapshotSaves = LockIsolated<[UUID]>([])
@@ -171,7 +171,7 @@ final class DashboardSubmissionTests: XCTestCase {
                     return $0
                 }
                 if attempt == 1 {
-                    throw SubmissionTestError.expected
+                    throw PortfolioAPIClientError.timeout
                 }
                 return analysis
             }
@@ -191,11 +191,11 @@ final class DashboardSubmissionTests: XCTestCase {
         await store.receive(
             .analysisRequestFinished(
                 snapshotID: snapshot.id,
-                result: .failed("Unable to reach the analysis service.")
+                result: .failed("Analysis took too long. Try again.")
             )
         ) {
             $0.analysisSubmissionState = .failed(
-                .request("Unable to reach the analysis service.")
+                .request("Analysis took too long. Try again.")
             )
         }
         await store.send(.retryAnalysisTapped) {

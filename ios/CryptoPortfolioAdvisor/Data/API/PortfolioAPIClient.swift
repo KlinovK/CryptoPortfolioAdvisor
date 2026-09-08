@@ -23,6 +23,14 @@ enum PortfolioAPIConfigurationError: Error, Equatable, Sendable {
 enum PortfolioAPIConfiguration {
     static let infoDictionaryKey = "CPA_BACKEND_BASE_URL"
     static let developmentBaseURL = URL(string: "http://127.0.0.1:8000")!
+    static let analysisRequestTimeout: TimeInterval = 120
+
+    static func makeAnalysisSession() -> URLSession {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = analysisRequestTimeout
+        configuration.timeoutIntervalForResource = analysisRequestTimeout
+        return URLSession(configuration: configuration)
+    }
 
     static var currentBaseURL: URL {
         do {
@@ -118,7 +126,7 @@ enum PortfolioAPIResponseDecoder {
 extension PortfolioAnalysisClient {
     static func live(
         baseURL: URL = PortfolioAPIConfiguration.currentBaseURL,
-        session: URLSession = .shared
+        session: URLSession = PortfolioAPIConfiguration.makeAnalysisSession()
     ) -> Self {
         Self { snapshot in
             let endpoint = baseURL
@@ -127,7 +135,7 @@ extension PortfolioAnalysisClient {
                 .appendingPathComponent("analyze")
             var request = URLRequest(url: endpoint)
             request.httpMethod = "POST"
-            request.timeoutInterval = 50
+            request.timeoutInterval = PortfolioAPIConfiguration.analysisRequestTimeout
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.setValue(UUID().uuidString, forHTTPHeaderField: "X-Request-ID")
 

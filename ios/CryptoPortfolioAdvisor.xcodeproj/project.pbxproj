@@ -574,7 +574,7 @@
 		AA0000000000000000000403 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CPA_BACKEND_BASE_URL = "https://api.example.com";
+				CPA_BACKEND_BASE_URL = "https://crypto-portfolio-advisor-api.onrender.com";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;

@@ -34,7 +34,8 @@ pip check
 
 Run the local static service with `uvicorn app.main:app --reload`. The iOS Debug build uses
 `http://127.0.0.1:8000`; its Release build reads one HTTPS-only build setting and rejects local
-hosts. Replace the reserved `https://api.example.com` Release placeholder before distribution.
+hosts. Release currently targets the approved Render staging endpoint at
+`https://crypto-portfolio-advisor-api.onrender.com`.
 See [`docs/deployment.md`](docs/deployment.md) and the staging-first
 [`docs/deployment-runbook.md`](docs/deployment-runbook.md) for migrations, runtime configuration,
 and deployment validation.

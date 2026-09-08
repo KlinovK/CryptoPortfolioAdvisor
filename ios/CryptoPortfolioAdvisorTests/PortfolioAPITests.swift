@@ -13,20 +13,20 @@ final class PortfolioAPITests: XCTestCase {
         XCTAssertEqual(url.absoluteString, "http://127.0.0.1:8000")
     }
 
-    func testReleaseConfigurationAcceptsHTTPSNonLocalBackend() throws {
+    func testReleaseConfigurationAcceptsConfiguredStagingHTTPSBackend() throws {
+        let expectedURL = "https://crypto-portfolio-advisor-api.onrender.com"
         let url = try PortfolioAPIConfiguration.baseURL(
-            configuredValue: "https://api.example.com",
+            configuredValue: expectedURL,
             environment: .release
         )
 
-        XCTAssertEqual(url.scheme, "https")
-        XCTAssertEqual(url.host, "api.example.com")
+        XCTAssertEqual(url.absoluteString, expectedURL)
     }
 
     func testReleaseConfigurationRejectsHTTPAndLocalhost() {
         XCTAssertThrowsError(
             try PortfolioAPIConfiguration.baseURL(
-                configuredValue: "http://api.example.com",
+                configuredValue: "http://crypto-portfolio-advisor-api.onrender.com",
                 environment: .release
             )
         ) { error in
@@ -46,6 +46,33 @@ final class PortfolioAPITests: XCTestCase {
                 .localReleaseURL
             )
         }
+    }
+
+    func testAnalysisRequestUsesStagingTimeoutAndMapsTransportTimeout() async throws {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.protocolClasses = [TimedOutURLProtocol.self]
+        let session = URLSession(configuration: configuration)
+        defer { session.invalidateAndCancel() }
+        let client = PortfolioAnalysisClient.live(
+            baseURL: URL(string: "https://crypto-portfolio-advisor-api.onrender.com")!,
+            session: session
+        )
+
+        XCTAssertEqual(PortfolioAPIConfiguration.analysisRequestTimeout, 120)
+        do {
+            _ = try await client.analyze(try Phase6TestFixtures.snapshot())
+            XCTFail("Expected the simulated request to time out.")
+        } catch {
+            XCTAssertEqual(error as? PortfolioAPIClientError, .timeout)
+        }
+    }
+
+    func testAnalysisSessionUsesBoundedStagingTimeouts() {
+        let session = PortfolioAPIConfiguration.makeAnalysisSession()
+        defer { session.invalidateAndCancel() }
+
+        XCTAssertEqual(session.configuration.timeoutIntervalForRequest, 120)
+        XCTAssertEqual(session.configuration.timeoutIntervalForResource, 120)
     }
 
     func testRequestMappingUsesSnakeCaseAndLosslessDecimalStrings() throws {
@@ -252,4 +279,24 @@ final class PortfolioAPITests: XCTestCase {
         }
         """
     }
+}
+
+private final class TimedOutURLProtocol: URLProtocol {
+    override class func canInit(with request: URLRequest) -> Bool {
+        true
+    }
+
+    override class func canonicalRequest(for request: URLRequest) -> URLRequest {
+        request
+    }
+
+    override func startLoading() {
+        let code: URLError.Code =
+            request.timeoutInterval == PortfolioAPIConfiguration.analysisRequestTimeout
+            ? .timedOut
+            : .badURL
+        client?.urlProtocol(self, didFailWithError: URLError(code))
+    }
+
+    override func stopLoading() {}
 }

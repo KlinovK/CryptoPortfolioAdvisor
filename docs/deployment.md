@@ -124,7 +124,8 @@ OpenAI key in iOS.
 
 CoinGecko defaults to a 10-second request timeout and one retry only for transport or `5xx`
 failures; `429` is not retried. OpenAI defaults to 30 seconds and zero SDK retries. The full backend
-analysis budget is 45 seconds and the iOS timeout is 50 seconds.
+analysis budget is 45 seconds and the iOS request timeout is 120 seconds so the staging client can
+tolerate a Render Free cold start before that backend budget begins.
 
 Single-line JSON logs contain request/snapshot identifiers, latency, analysis mode, idempotency
 outcome, provider outcome, accepted/rejected action counts, and OpenAI model/token usage when
@@ -136,10 +137,11 @@ allowlist there before production traffic.
 
 Debug uses `http://127.0.0.1:8000` and has the only local-network ATS allowance. Release reads the
 central `CPA_BACKEND_BASE_URL`, requires HTTPS, rejects loopback hosts, and has no ATS relaxation.
-The reserved `https://api.example.com` value must remain visibly blocked until a real hostname is
-known; do not replace it with another placeholder.
+Release currently targets the approved staging hostname at
+`https://crypto-portfolio-advisor-api.onrender.com`. Any future host change must preserve the same
+transport checks and must not introduce an ATS exception.
 
 The bundle identifier, Apple team, signing assets, AppIcon, privacy-policy URL, App Store metadata,
-device-family decision, and final API hostname are account/product inputs, not values this
-repository can invent. Follow [`deployment-runbook.md`](deployment-runbook.md) once those inputs
-exist.
+device-family decision, and production API-host decision are account/product inputs, not values
+this repository can invent. Follow [`deployment-runbook.md`](deployment-runbook.md) once those
+inputs exist.

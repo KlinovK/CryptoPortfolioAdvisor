@@ -50,7 +50,8 @@ Store Connect record, and CoinGecko plan before shipping.
 - [x] Deployment target is iOS 18.0 or later.
 - [x] Release accepts only HTTPS backend URLs and rejects loopback hosts.
 - [x] Release Info.plist has no local-network ATS exception.
-- [ ] Replace `https://api.example.com` with the selected production API endpoint.
+- [x] Configure Release with the approved Render staging endpoint:
+  `https://crypto-portfolio-advisor-api.onrender.com`.
 - [ ] Replace temporary bundle identifier `com.example.CryptoPortfolioAdvisor`.
 - [ ] Select the Apple Developer team, signing certificate, and provisioning profile.
 - [ ] Add final AppIcon assets; no production icon asset is present yet.
@@ -161,7 +162,6 @@ provided.
   attribution approval; no live six-asset smoke result
 - Production OpenAI on/off decision is not recorded; if enabled, its key/model/live compatibility
   evidence is absent
-- Release iOS host is still `https://api.example.com`
 - Bundle identifier remains `com.example.CryptoPortfolioAdvisor`
 - Apple team, signing identities/profiles, signed archive, and physical-iPhone validation are absent
 - Production AppIcon is missing

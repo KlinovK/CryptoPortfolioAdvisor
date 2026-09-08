@@ -20,14 +20,15 @@ advisor only: it has no exchange connection and never executes a trade.
 - State management: The Composable Architecture 1.26.2 or a compatible 1.x update
 - Persistence: SwiftData, configured at the application composition root
 - Debug backend: `CPA_BACKEND_BASE_URL=http://127.0.0.1:8000`
-- Release backend: `CPA_BACKEND_BASE_URL=https://api.example.com` placeholder; replace it with the
-  selected deployment endpoint before distribution
+- Release backend:
+  `CPA_BACKEND_BASE_URL=https://crypto-portfolio-advisor-api.onrender.com`
 - Temporary app bundle identifier: `com.example.CryptoPortfolioAdvisor`
 
 `PortfolioAPIConfiguration` reads that one build-setting-backed Info.plist key. Release accepts only HTTPS
 and rejects localhost/loopback. Debug alone has `NSAllowsLocalNetworking`; Release has no insecure
-ATS exception. Replace both the bundle identifier and placeholder URL only after their real values
-are approved, then verify the signed build against the staging-first deployment runbook.
+ATS exception. The Release URL targets the approved Render staging deployment. Replace the bundle
+identifier only after its real value is approved, then verify the signed build against the
+staging-first deployment runbook.
 
 No separate Staging Xcode configuration is added in Phase 12. Until a real staging hostname and
 signing workflow exist, another project configuration would duplicate unresolved settings. An
@@ -73,10 +74,12 @@ uvicorn app.main:app --reload
 An iOS Simulator can reach the host service at `http://127.0.0.1:8000`. The URL is centralized in
 the app target build setting and validated by `PortfolioAPIConfiguration`. The Debug
 Info.plist permits local-network HTTP for this workflow; Release does not include that exception.
-A production deployment must replace the reserved HTTPS placeholder rather than broadening ATS.
+A future production-host change must update the central HTTPS build setting rather than broadening
+ATS.
 
-The API implementation uses URLSession `data(for:)`, a 50-second timeout around the backend's
-45-second total budget, JSON content type, per-attempt request ID, status-code handling, stable
+The API implementation uses URLSession `data(for:)` with dedicated, bounded 120-second request and
+resource timeouts that allow for staging cold start plus the backend's 45-second total analysis
+budget, JSON content type, per-attempt request ID, status-code handling, stable
 error-envelope decoding, and structured-concurrency cancellation.
 Request/response DTOs own snake_case keys and decimal strings; Features see only Domain values and
 the `PortfolioAnalysisClient` async capability.
