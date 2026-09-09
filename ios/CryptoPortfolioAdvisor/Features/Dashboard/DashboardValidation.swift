@@ -109,9 +109,12 @@ extension DashboardFeature.State {
 
             do {
                 symbol = try AssetSymbol(draft.symbol)
-            } catch {
+            } catch DomainValidationError.emptyAssetSymbol {
                 symbol = nil
                 rowErrors.symbol = "Asset symbol is required."
+            } catch {
+                symbol = nil
+                rowErrors.symbol = "Use 1–20 letters, numbers, '.', '_' or '-'."
             }
 
             if let parsedAmount = DashboardDecimalParser.parse(draft.amount, locale: locale) {
@@ -206,9 +209,12 @@ extension DashboardFeature.State {
 
             do {
                 symbol = try AssetSymbol(draft.symbol)
-            } catch {
+            } catch DomainValidationError.emptyAssetSymbol {
                 symbol = nil
                 rowErrors.symbol = "Asset symbol is required."
+            } catch {
+                symbol = nil
+                rowErrors.symbol = "Use 1–20 letters, numbers, '.', '_' or '-'."
             }
 
             if let parsedAmount = DashboardDecimalParser.parse(draft.amountUSD, locale: locale) {

@@ -98,6 +98,37 @@ final class PortfolioAPITests: XCTestCase {
         )
         XCTAssertEqual(orders[0]["amount_usd"] as? String, "1234.567890123456789")
         XCTAssertEqual(orders[0]["target_price"] as? String, "15.123456789012345")
+        XCTAssertTrue(orders[0].keys.contains("resolved_at"))
+        XCTAssertTrue(orders[0]["resolved_at"] is NSNull)
+    }
+
+    func testKnownValidProductionValuesEncodeExactly() throws {
+        var state = DashboardFeature.State()
+        state.assetPositions = [
+            AssetPositionDraft(id: UUID(), symbol: "BTC", amount: "0.01"),
+            AssetPositionDraft(id: UUID(), symbol: "USDC", amount: "1000")
+        ]
+        state.constraints.additionalMonthlyIncomeUSD = "0"
+        state.constraints.minimumStableReserveUSD = "100"
+        let validatedInput = try XCTUnwrap(
+            state.makeValidatedDraft(
+                locale: Locale(identifier: "en_US_POSIX")
+            ).validatedInput
+        )
+        let snapshot = PortfolioSnapshot(
+            id: UUID(),
+            createdAt: Date(timeIntervalSince1970: 1_788_500_520),
+            portfolio: validatedInput.portfolio,
+            constraints: validatedInput.constraints,
+            orders: validatedInput.limitOrders
+        )
+        let dto = PortfolioAPIMapper.request(from: snapshot)
+
+        XCTAssertEqual(dto.portfolio.positions[0].amount, "0.01")
+        XCTAssertEqual(dto.portfolio.positions[1].amount, "1000")
+        XCTAssertEqual(dto.constraints.additionalMonthlyIncomeUSD, "0")
+        XCTAssertEqual(dto.constraints.minimumStableReserveUSD, "100")
+        XCTAssertTrue(dto.orders.isEmpty)
     }
 
     func testRepresentativeResponseMapsToDomainLosslessly() throws {
@@ -207,6 +238,31 @@ final class PortfolioAPITests: XCTestCase {
                     statusCode: 400,
                     code: "invalid_request",
                     message: "Duplicate symbol."
+                )
+            )
+        }
+    }
+
+    func testMalformedRequestEnvelopeMapsToTypedClientError() throws {
+        let data = Data(
+            #"{"error":{"code":"malformed_request","message":"Request payload is malformed."}}"#.utf8
+        )
+        let response = HTTPURLResponse(
+            url: URL(string: "https://crypto-portfolio-advisor-api.onrender.com/v1/portfolio/analyze")!,
+            statusCode: 422,
+            httpVersion: nil,
+            headerFields: nil
+        )!
+
+        XCTAssertThrowsError(
+            try PortfolioAPIResponseDecoder.decode(data: data, response: response)
+        ) { error in
+            XCTAssertEqual(
+                error as? PortfolioAPIClientError,
+                .server(
+                    statusCode: 422,
+                    code: "malformed_request",
+                    message: "Request payload is malformed."
                 )
             )
         }

@@ -476,6 +476,9 @@ struct DashboardFeature {
         }
 
         switch apiError {
+        case let .server(statusCode, code, _)
+            where statusCode == 422 || code == "malformed_request":
+            return "Some portfolio details are invalid. Review your entries and try again."
         case let .server(_, code, message) where code == "invalid_request":
             return message
         case let .server(_, code, _) where code == "analysis_timeout":

@@ -1,5 +1,6 @@
 enum DomainValidationError: Error, Equatable, Sendable {
     case emptyAssetSymbol
+    case invalidAssetSymbol
     case negativeAssetAmount
     case duplicateAssetSymbol(AssetSymbol)
     case negativeAdditionalMonthlyIncomeUSD

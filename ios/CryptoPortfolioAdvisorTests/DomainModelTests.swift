@@ -17,6 +17,14 @@ final class DomainModelTests: XCTestCase {
         }
     }
 
+    func testTransportIncompatibleAssetSymbolsAreRejected() {
+        for rawValue in ["BTC/USD", "BT C", "_BTC", String(repeating: "A", count: 21)] {
+            XCTAssertThrowsError(try AssetSymbol(rawValue)) { error in
+                XCTAssertEqual(error as? DomainValidationError, .invalidAssetSymbol)
+            }
+        }
+    }
+
     func testAssetPositionRejectsNegativeAmount() {
         XCTAssertThrowsError(try AssetPosition(symbol: .btc, amount: -1)) { error in
             XCTAssertEqual(error as? DomainValidationError, .negativeAssetAmount)

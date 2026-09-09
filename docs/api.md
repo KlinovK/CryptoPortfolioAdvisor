@@ -76,7 +76,8 @@ Rules:
 - Order `amount_usd` and `target_price` are greater than zero.
 - `trading_style` is `active`; `risk_tolerance` is `conservative`, `moderate`, or `aggressive`.
 - Order `side` is `buy` or `sell`; `status` is `open`, `filled`, or `cancelled`.
-- An open order cannot have `resolved_at`.
+- `resolved_at` is a required nullable field. An open order sends `resolved_at: null` and cannot
+  have a non-null resolution date.
 - Orders are manually tracked input only. No endpoint places or changes an order.
 - Request bodies are limited to 64 KiB by default. Larger bodies return `413 request_too_large`.
 - A client may provide `X-Request-ID` using 1–128 letters, digits, `.`, `_`, or `-`. Invalid or

@@ -356,6 +356,21 @@ final class DashboardSubmissionTests: XCTestCase {
         XCTAssertFalse(message.contains("database implementation detail"))
     }
 
+    func testMalformedRequestMapsToInputValidationMessage() {
+        let message = DashboardFeature.requestFailureMessage(
+            for: PortfolioAPIClientError.server(
+                statusCode: 422,
+                code: "malformed_request",
+                message: "Request payload is malformed."
+            )
+        )
+
+        XCTAssertEqual(
+            message,
+            "Some portfolio details are invalid. Review your entries and try again."
+        )
+    }
+
     func testTransportFailureMapsToReachabilityMessage() {
         XCTAssertEqual(
             DashboardFeature.requestFailureMessage(for: PortfolioAPIClientError.transport),

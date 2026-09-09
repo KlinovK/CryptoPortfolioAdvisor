@@ -78,6 +78,24 @@ final class DashboardFeatureTests: XCTestCase {
         )
     }
 
+    func testTransportIncompatibleAssetSymbolIsRejectedBeforeSubmission() {
+        let id = UUID()
+        var state = makeValidState(symbol: "BTC/USD")
+        state.assetPositions[0] = AssetPositionDraft(
+            id: id,
+            symbol: "BTC/USD",
+            amount: "0.01"
+        )
+
+        let outcome = state.makeValidatedDraft(locale: posixLocale)
+
+        XCTAssertNil(outcome.validatedInput)
+        XCTAssertEqual(
+            outcome.errors.assetPositions[id]?.symbol,
+            "Use 1–20 letters, numbers, '.', '_' or '-'."
+        )
+    }
+
     func testNegativeAssetAmountIsRejected() {
         let id = UUID()
         var state = DashboardFeature.State()

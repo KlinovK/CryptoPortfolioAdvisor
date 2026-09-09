@@ -3,6 +3,13 @@ import Foundation
 struct AssetSymbol: Equatable, Hashable, Sendable {
     let rawValue: String
 
+    private static let allowedCharacters = CharacterSet(
+        charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-"
+    )
+    private static let allowedInitialCharacters = CharacterSet(
+        charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    )
+
     init(_ rawValue: String) throws {
         let normalized = rawValue
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -10,6 +17,15 @@ struct AssetSymbol: Equatable, Hashable, Sendable {
 
         guard !normalized.isEmpty else {
             throw DomainValidationError.emptyAssetSymbol
+        }
+
+        let scalars = normalized.unicodeScalars
+        guard scalars.count <= 20,
+              let first = scalars.first,
+              Self.allowedInitialCharacters.contains(first),
+              scalars.allSatisfy(Self.allowedCharacters.contains)
+        else {
+            throw DomainValidationError.invalidAssetSymbol
         }
 
         self.rawValue = normalized

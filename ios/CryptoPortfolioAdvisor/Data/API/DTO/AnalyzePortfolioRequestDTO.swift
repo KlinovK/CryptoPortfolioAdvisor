@@ -46,6 +46,22 @@ struct AnalyzePortfolioRequestDTO: Codable, Equatable, Sendable {
             case createdAt = "created_at"
             case resolvedAt = "resolved_at"
         }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(id, forKey: .id)
+            try container.encode(symbol, forKey: .symbol)
+            try container.encode(side, forKey: .side)
+            try container.encode(amountUSD, forKey: .amountUSD)
+            try container.encode(targetPrice, forKey: .targetPrice)
+            try container.encode(status, forKey: .status)
+            try container.encode(createdAt, forKey: .createdAt)
+            if let resolvedAt {
+                try container.encode(resolvedAt, forKey: .resolvedAt)
+            } else {
+                try container.encodeNil(forKey: .resolvedAt)
+            }
+        }
     }
 
     let snapshotID: UUID

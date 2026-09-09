@@ -209,35 +209,6 @@
 			path = Domain;
 			sourceTree = "<group>";
 		};
-		AA000000000000000000001B /* Portfolio */ = {
-			isa = PBXGroup;
-			children = (
-				AA000000000000000000010D /* AssetSymbol.swift */,
-				AA000000000000000000010E /* AssetPosition.swift */,
-				AA000000000000000000010F /* Portfolio.swift */,
-				AA0000000000000000000110 /* PortfolioSnapshot.swift */,
-			);
-			path = Portfolio;
-			sourceTree = "<group>";
-		};
-		AA000000000000000000001C /* Trading */ = {
-			isa = PBXGroup;
-			children = (
-				AA0000000000000000000111 /* TradingConstraints.swift */,
-				AA0000000000000000000112 /* LimitOrder.swift */,
-			);
-			path = Trading;
-			sourceTree = "<group>";
-		};
-		AA000000000000000000001D /* Analysis */ = {
-			isa = PBXGroup;
-			children = (
-				AA0000000000000000000113 /* PortfolioAction.swift */,
-				AA0000000000000000000114 /* PortfolioAnalysis.swift */,
-			);
-			path = Analysis;
-			sourceTree = "<group>";
-		};
 		AA0000000000000000000017 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -283,6 +254,35 @@
 				AA000000000000000000010C /* CryptoPortfolioAdvisorTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		AA000000000000000000001B /* Portfolio */ = {
+			isa = PBXGroup;
+			children = (
+				AA000000000000000000010D /* AssetSymbol.swift */,
+				AA000000000000000000010E /* AssetPosition.swift */,
+				AA000000000000000000010F /* Portfolio.swift */,
+				AA0000000000000000000110 /* PortfolioSnapshot.swift */,
+			);
+			path = Portfolio;
+			sourceTree = "<group>";
+		};
+		AA000000000000000000001C /* Trading */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000111 /* TradingConstraints.swift */,
+				AA0000000000000000000112 /* LimitOrder.swift */,
+			);
+			path = Trading;
+			sourceTree = "<group>";
+		};
+		AA000000000000000000001D /* Analysis */ = {
+			isa = PBXGroup;
+			children = (
+				AA0000000000000000000113 /* PortfolioAction.swift */,
+				AA0000000000000000000114 /* PortfolioAnalysis.swift */,
+			);
+			path = Analysis;
 			sourceTree = "<group>";
 		};
 		AA000000000000000000001E /* Persistence */ = {
@@ -551,9 +551,10 @@
 		AA0000000000000000000402 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CPA_BACKEND_BASE_URL = "http://127.0.0.1:8000";
 				CODE_SIGN_STYLE = Automatic;
+				CPA_BACKEND_BASE_URL = "http://127.0.0.1:8000";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2UBDP9T662;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "CryptoPortfolioAdvisor/App/Info-Debug.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -574,9 +575,10 @@
 		AA0000000000000000000403 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CPA_BACKEND_BASE_URL = "https://crypto-portfolio-advisor-api.onrender.com";
 				CODE_SIGN_STYLE = Automatic;
+				CPA_BACKEND_BASE_URL = "https://crypto-portfolio-advisor-api.onrender.com";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2UBDP9T662;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "CryptoPortfolioAdvisor/App/Info-Release.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
