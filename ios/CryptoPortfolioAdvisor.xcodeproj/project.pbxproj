@@ -53,6 +53,25 @@
 		AA000000000000000000022C /* PortfolioAPITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000012E /* PortfolioAPITests.swift */; };
 		AA000000000000000000022D /* DashboardSubmissionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000000000000000000012F /* DashboardSubmissionTests.swift */; };
 		AA000000000000000000022E /* AnalysisDetailsFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0000000000000000000130 /* AnalysisDetailsFeatureTests.swift */; };
+		AB0000000000000000000065 /* ATAAPIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000001 /* ATAAPIConfiguration.swift */; };
+		AB0000000000000000000066 /* ATAAnalysisMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000002 /* ATAAnalysisMapper.swift */; };
+		AB0000000000000000000067 /* ATAPortfolioMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000003 /* ATAPortfolioMapper.swift */; };
+		AB0000000000000000000068 /* ATAWireCodecs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000004 /* ATAWireCodecs.swift */; };
+		AB0000000000000000000069 /* ATAAnalysisDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000005 /* ATAAnalysisDTOs.swift */; };
+		AB000000000000000000006A /* ATAErrorAndScoreDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000006 /* ATAErrorAndScoreDTOs.swift */; };
+		AB000000000000000000006B /* ATAMutationRequestDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000007 /* ATAMutationRequestDTOs.swift */; };
+		AB000000000000000000006C /* ATAPortfolioDTOs.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000008 /* ATAPortfolioDTOs.swift */; };
+		AB000000000000000000006D /* ATAAnalysisModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000009 /* ATAAnalysisModels.swift */; };
+		AB000000000000000000006E /* ATAEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000000000000000000000A /* ATAEnums.swift */; };
+		AB000000000000000000006F /* ATAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000000000000000000000B /* ATAError.swift */; };
+		AB0000000000000000000070 /* ATAPortfolioModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000000000000000000000C /* ATAPortfolioModels.swift */; };
+		AB0000000000000000000071 /* ATAAnalysisMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000000000000000000000D /* ATAAnalysisMappingTests.swift */; };
+		AB0000000000000000000072 /* ATAConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000000000000000000000E /* ATAConfigurationTests.swift */; };
+		AB0000000000000000000073 /* ATAEnumAndErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB000000000000000000000F /* ATAEnumAndErrorTests.swift */; };
+		AB0000000000000000000074 /* ATAFoundationFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000010 /* ATAFoundationFixtures.swift */; };
+		AB0000000000000000000075 /* ATAMutationRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000011 /* ATAMutationRequestTests.swift */; };
+		AB0000000000000000000076 /* ATAPortfolioMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000012 /* ATAPortfolioMappingTests.swift */; };
+		AB0000000000000000000077 /* ATAWireCodecTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000013 /* ATAWireCodecTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +134,25 @@
 		AA000000000000000000012E /* PortfolioAPITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioAPITests.swift; sourceTree = "<group>"; };
 		AA000000000000000000012F /* DashboardSubmissionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardSubmissionTests.swift; sourceTree = "<group>"; };
 		AA0000000000000000000130 /* AnalysisDetailsFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalysisDetailsFeatureTests.swift; sourceTree = "<group>"; };
+		AB0000000000000000000001 /* ATAAPIConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAPIConfiguration.swift; sourceTree = "<group>"; };
+		AB0000000000000000000002 /* ATAAnalysisMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAnalysisMapper.swift; sourceTree = "<group>"; };
+		AB0000000000000000000003 /* ATAPortfolioMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAPortfolioMapper.swift; sourceTree = "<group>"; };
+		AB0000000000000000000004 /* ATAWireCodecs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAWireCodecs.swift; sourceTree = "<group>"; };
+		AB0000000000000000000005 /* ATAAnalysisDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAnalysisDTOs.swift; sourceTree = "<group>"; };
+		AB0000000000000000000006 /* ATAErrorAndScoreDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAErrorAndScoreDTOs.swift; sourceTree = "<group>"; };
+		AB0000000000000000000007 /* ATAMutationRequestDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAMutationRequestDTOs.swift; sourceTree = "<group>"; };
+		AB0000000000000000000008 /* ATAPortfolioDTOs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAPortfolioDTOs.swift; sourceTree = "<group>"; };
+		AB0000000000000000000009 /* ATAAnalysisModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAnalysisModels.swift; sourceTree = "<group>"; };
+		AB000000000000000000000A /* ATAEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAEnums.swift; sourceTree = "<group>"; };
+		AB000000000000000000000B /* ATAError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAError.swift; sourceTree = "<group>"; };
+		AB000000000000000000000C /* ATAPortfolioModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAPortfolioModels.swift; sourceTree = "<group>"; };
+		AB000000000000000000000D /* ATAAnalysisMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAnalysisMappingTests.swift; sourceTree = "<group>"; };
+		AB000000000000000000000E /* ATAConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAConfigurationTests.swift; sourceTree = "<group>"; };
+		AB000000000000000000000F /* ATAEnumAndErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAEnumAndErrorTests.swift; sourceTree = "<group>"; };
+		AB0000000000000000000010 /* ATAFoundationFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAFoundationFixtures.swift; sourceTree = "<group>"; };
+		AB0000000000000000000011 /* ATAMutationRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAMutationRequestTests.swift; sourceTree = "<group>"; };
+		AB0000000000000000000012 /* ATAPortfolioMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAPortfolioMappingTests.swift; sourceTree = "<group>"; };
+		AB0000000000000000000013 /* ATAWireCodecTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAWireCodecTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +239,7 @@
 		AA0000000000000000000016 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				AB000000000000000000012D /* ATA */,
 				AA000000000000000000001B /* Portfolio */,
 				AA000000000000000000001C /* Trading */,
 				AA000000000000000000001D /* Analysis */,
@@ -232,6 +271,13 @@
 		AA0000000000000000000019 /* CryptoPortfolioAdvisorTests */ = {
 			isa = PBXGroup;
 			children = (
+				AB000000000000000000000D /* ATAAnalysisMappingTests.swift */,
+				AB000000000000000000000E /* ATAConfigurationTests.swift */,
+				AB000000000000000000000F /* ATAEnumAndErrorTests.swift */,
+				AB0000000000000000000010 /* ATAFoundationFixtures.swift */,
+				AB0000000000000000000011 /* ATAMutationRequestTests.swift */,
+				AB0000000000000000000012 /* ATAPortfolioMappingTests.swift */,
+				AB0000000000000000000013 /* ATAWireCodecTests.swift */,
 				AA000000000000000000010A /* AppFeatureTests.swift */,
 				AA0000000000000000000115 /* DomainModelTests.swift */,
 				AA0000000000000000000118 /* DashboardFeatureTests.swift */,
@@ -318,6 +364,7 @@
 		AA0000000000000000000021 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				AB000000000000000000012E /* ATA */,
 				AA0000000000000000000022 /* DTO */,
 				AA0000000000000000000127 /* PortfolioAPIMapper.swift */,
 				AA0000000000000000000128 /* PortfolioAPIClient.swift */,
@@ -341,6 +388,40 @@
 				AA000000000000000000012C /* AnalysisDetailsView.swift */,
 			);
 			path = AnalysisDetails;
+			sourceTree = "<group>";
+		};
+		AB000000000000000000012D /* ATA */ = {
+			isa = PBXGroup;
+			children = (
+				AB0000000000000000000009 /* ATAAnalysisModels.swift */,
+				AB000000000000000000000A /* ATAEnums.swift */,
+				AB000000000000000000000B /* ATAError.swift */,
+				AB000000000000000000000C /* ATAPortfolioModels.swift */,
+			);
+			path = ATA;
+			sourceTree = "<group>";
+		};
+		AB000000000000000000012E /* ATA */ = {
+			isa = PBXGroup;
+			children = (
+				AB0000000000000000000001 /* ATAAPIConfiguration.swift */,
+				AB0000000000000000000002 /* ATAAnalysisMapper.swift */,
+				AB0000000000000000000003 /* ATAPortfolioMapper.swift */,
+				AB0000000000000000000004 /* ATAWireCodecs.swift */,
+				AB000000000000000000012F /* DTO */,
+			);
+			path = ATA;
+			sourceTree = "<group>";
+		};
+		AB000000000000000000012F /* DTO */ = {
+			isa = PBXGroup;
+			children = (
+				AB0000000000000000000005 /* ATAAnalysisDTOs.swift */,
+				AB0000000000000000000006 /* ATAErrorAndScoreDTOs.swift */,
+				AB0000000000000000000007 /* ATAMutationRequestDTOs.swift */,
+				AB0000000000000000000008 /* ATAPortfolioDTOs.swift */,
+			);
+			path = DTO;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -449,6 +530,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB0000000000000000000065 /* ATAAPIConfiguration.swift in Sources */,
+				AB0000000000000000000066 /* ATAAnalysisMapper.swift in Sources */,
+				AB0000000000000000000067 /* ATAPortfolioMapper.swift in Sources */,
+				AB0000000000000000000068 /* ATAWireCodecs.swift in Sources */,
+				AB0000000000000000000069 /* ATAAnalysisDTOs.swift in Sources */,
+				AB000000000000000000006A /* ATAErrorAndScoreDTOs.swift in Sources */,
+				AB000000000000000000006B /* ATAMutationRequestDTOs.swift in Sources */,
+				AB000000000000000000006C /* ATAPortfolioDTOs.swift in Sources */,
+				AB000000000000000000006D /* ATAAnalysisModels.swift in Sources */,
+				AB000000000000000000006E /* ATAEnums.swift in Sources */,
+				AB000000000000000000006F /* ATAError.swift in Sources */,
+				AB0000000000000000000070 /* ATAPortfolioModels.swift in Sources */,
 				AA0000000000000000000200 /* CryptoPortfolioAdvisorApp.swift in Sources */,
 				AA0000000000000000000201 /* AppFeature.swift in Sources */,
 				AA0000000000000000000202 /* AppView.swift in Sources */,
@@ -490,6 +583,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB0000000000000000000071 /* ATAAnalysisMappingTests.swift in Sources */,
+				AB0000000000000000000072 /* ATAConfigurationTests.swift in Sources */,
+				AB0000000000000000000073 /* ATAEnumAndErrorTests.swift in Sources */,
+				AB0000000000000000000074 /* ATAFoundationFixtures.swift in Sources */,
+				AB0000000000000000000075 /* ATAMutationRequestTests.swift in Sources */,
+				AB0000000000000000000076 /* ATAPortfolioMappingTests.swift in Sources */,
+				AB0000000000000000000077 /* ATAWireCodecTests.swift in Sources */,
 				AA0000000000000000000207 /* AppFeatureTests.swift in Sources */,
 				AA0000000000000000000213 /* DomainModelTests.swift in Sources */,
 				AA0000000000000000000216 /* DashboardFeatureTests.swift in Sources */,
