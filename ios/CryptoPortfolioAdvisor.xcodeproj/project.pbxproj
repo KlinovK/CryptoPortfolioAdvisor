@@ -72,6 +72,17 @@
 		AB0000000000000000000075 /* ATAMutationRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000011 /* ATAMutationRequestTests.swift */; };
 		AB0000000000000000000076 /* ATAPortfolioMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000012 /* ATAPortfolioMappingTests.swift */; };
 		AB0000000000000000000077 /* ATAWireCodecTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000000000000000000013 /* ATAWireCodecTests.swift */; };
+		AC0000000000000000000065 /* ATAHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000001 /* ATAHTTPClient.swift */; };
+		AC0000000000000000000066 /* ATAHTTPTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000002 /* ATAHTTPTransport.swift */; };
+		AC0000000000000000000067 /* KeychainCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000003 /* KeychainCredentialStore.swift */; };
+		AC0000000000000000000068 /* ATAClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000004 /* ATAClient.swift */; };
+		AC0000000000000000000069 /* ATAClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000005 /* ATAClientError.swift */; };
+		AC000000000000000000006A /* CredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000006 /* CredentialStore.swift */; };
+		AC000000000000000000006B /* ATAClientConcurrencyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000007 /* ATAClientConcurrencyTests.swift */; };
+		AC000000000000000000006C /* ATAClientMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000008 /* ATAClientMutationTests.swift */; };
+		AC000000000000000000006D /* ATAClientReadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000000000000000000009 /* ATAClientReadTests.swift */; };
+		AC000000000000000000006E /* ATAClientTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC000000000000000000000A /* ATAClientTestSupport.swift */; };
+		AC000000000000000000006F /* CredentialStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC000000000000000000000B /* CredentialStoreTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -153,6 +164,17 @@
 		AB0000000000000000000011 /* ATAMutationRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAMutationRequestTests.swift; sourceTree = "<group>"; };
 		AB0000000000000000000012 /* ATAPortfolioMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAPortfolioMappingTests.swift; sourceTree = "<group>"; };
 		AB0000000000000000000013 /* ATAWireCodecTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAWireCodecTests.swift; sourceTree = "<group>"; };
+		AC0000000000000000000001 /* ATAHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAHTTPClient.swift; sourceTree = "<group>"; };
+		AC0000000000000000000002 /* ATAHTTPTransport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAHTTPTransport.swift; sourceTree = "<group>"; };
+		AC0000000000000000000003 /* KeychainCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainCredentialStore.swift; sourceTree = "<group>"; };
+		AC0000000000000000000004 /* ATAClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAClient.swift; sourceTree = "<group>"; };
+		AC0000000000000000000005 /* ATAClientError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAClientError.swift; sourceTree = "<group>"; };
+		AC0000000000000000000006 /* CredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStore.swift; sourceTree = "<group>"; };
+		AC0000000000000000000007 /* ATAClientConcurrencyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAClientConcurrencyTests.swift; sourceTree = "<group>"; };
+		AC0000000000000000000008 /* ATAClientMutationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAClientMutationTests.swift; sourceTree = "<group>"; };
+		AC0000000000000000000009 /* ATAClientReadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAClientReadTests.swift; sourceTree = "<group>"; };
+		AC000000000000000000000A /* ATAClientTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAClientTestSupport.swift; sourceTree = "<group>"; };
+		AC000000000000000000000B /* CredentialStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialStoreTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -251,6 +273,7 @@
 		AA0000000000000000000017 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				AC000000000000000000012D /* Credentials */,
 				AA0000000000000000000021 /* API */,
 				AA000000000000000000001E /* Persistence */,
 				AA0000000000000000000108 /* README.md */,
@@ -261,6 +284,9 @@
 		AA0000000000000000000018 /* Dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				AC0000000000000000000004 /* ATAClient.swift */,
+				AC0000000000000000000005 /* ATAClientError.swift */,
+				AC0000000000000000000006 /* CredentialStore.swift */,
 				AA0000000000000000000119 /* PortfolioPersistenceClient.swift */,
 				AA0000000000000000000129 /* PortfolioAnalysisClient.swift */,
 				AA0000000000000000000109 /* README.md */,
@@ -271,6 +297,11 @@
 		AA0000000000000000000019 /* CryptoPortfolioAdvisorTests */ = {
 			isa = PBXGroup;
 			children = (
+				AC0000000000000000000007 /* ATAClientConcurrencyTests.swift */,
+				AC0000000000000000000008 /* ATAClientMutationTests.swift */,
+				AC0000000000000000000009 /* ATAClientReadTests.swift */,
+				AC000000000000000000000A /* ATAClientTestSupport.swift */,
+				AC000000000000000000000B /* CredentialStoreTests.swift */,
 				AB000000000000000000000D /* ATAAnalysisMappingTests.swift */,
 				AB000000000000000000000E /* ATAConfigurationTests.swift */,
 				AB000000000000000000000F /* ATAEnumAndErrorTests.swift */,
@@ -404,6 +435,8 @@
 		AB000000000000000000012E /* ATA */ = {
 			isa = PBXGroup;
 			children = (
+				AC0000000000000000000001 /* ATAHTTPClient.swift */,
+				AC0000000000000000000002 /* ATAHTTPTransport.swift */,
 				AB0000000000000000000001 /* ATAAPIConfiguration.swift */,
 				AB0000000000000000000002 /* ATAAnalysisMapper.swift */,
 				AB0000000000000000000003 /* ATAPortfolioMapper.swift */,
@@ -422,6 +455,14 @@
 				AB0000000000000000000008 /* ATAPortfolioDTOs.swift */,
 			);
 			path = DTO;
+			sourceTree = "<group>";
+		};
+		AC000000000000000000012D /* Credentials */ = {
+			isa = PBXGroup;
+			children = (
+				AC0000000000000000000003 /* KeychainCredentialStore.swift */,
+			);
+			path = Credentials;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -530,6 +571,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC0000000000000000000065 /* ATAHTTPClient.swift in Sources */,
+				AC0000000000000000000066 /* ATAHTTPTransport.swift in Sources */,
+				AC0000000000000000000067 /* KeychainCredentialStore.swift in Sources */,
+				AC0000000000000000000068 /* ATAClient.swift in Sources */,
+				AC0000000000000000000069 /* ATAClientError.swift in Sources */,
+				AC000000000000000000006A /* CredentialStore.swift in Sources */,
 				AB0000000000000000000065 /* ATAAPIConfiguration.swift in Sources */,
 				AB0000000000000000000066 /* ATAAnalysisMapper.swift in Sources */,
 				AB0000000000000000000067 /* ATAPortfolioMapper.swift in Sources */,
@@ -583,6 +630,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC000000000000000000006B /* ATAClientConcurrencyTests.swift in Sources */,
+				AC000000000000000000006C /* ATAClientMutationTests.swift in Sources */,
+				AC000000000000000000006D /* ATAClientReadTests.swift in Sources */,
+				AC000000000000000000006E /* ATAClientTestSupport.swift in Sources */,
+				AC000000000000000000006F /* CredentialStoreTests.swift in Sources */,
 				AB0000000000000000000071 /* ATAAnalysisMappingTests.swift in Sources */,
 				AB0000000000000000000072 /* ATAConfigurationTests.swift in Sources */,
 				AB0000000000000000000073 /* ATAEnumAndErrorTests.swift in Sources */,
