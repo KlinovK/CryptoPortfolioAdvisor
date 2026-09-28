@@ -6,7 +6,7 @@ struct AppView: View {
 
     var body: some View {
         TabView(selection: $store.selectedTab.sending(\.selectedTabChanged)) {
-            DashboardView(
+            ATADashboardView(
                 store: store.scope(state: \.dashboard, action: \.dashboard)
             )
             .tabItem {

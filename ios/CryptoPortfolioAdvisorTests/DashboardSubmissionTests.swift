@@ -5,7 +5,8 @@ import XCTest
 @testable import CryptoPortfolioAdvisor
 
 @MainActor
-final class DashboardSubmissionTests: XCTestCase {
+// Legacy CPA analysis submission remains covered but is disconnected from app navigation.
+final class LegacyCPADashboardSubmissionTests: XCTestCase {
     func testSuccessfulSubmissionPersistsSnapshotBeforeRequestAndAnalysis() async throws {
         let snapshot = try Phase6TestFixtures.snapshot()
         let analysis = try Phase6TestFixtures.analysis()

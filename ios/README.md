@@ -1,13 +1,10 @@
 # iOS application
 
-Phase 12 retains the Phase 11 product flow and prepares its deployment/release boundary without
-adding features. The app presents deterministic portfolio metrics and risk assessment returned by the backend,
-plus the backend-provided analysis source (`deterministic`, `ai_assisted`, or `ai_fallback`).
-The editable Dashboard draft survives relaunches; Analyze saves an immutable `PortfolioSnapshot`,
-submits it to the local FastAPI backend, and stores the returned `PortfolioAnalysis`. History
-displays only completed analyses with read-only details. The backend-provided market summary
-identifies whether its source is static development data or live public data. The app remains an
-advisor only: it has no exchange connection and never executes a trade.
+Step 9D makes the active Dashboard a read-only view of the confirmed Advanced Trading Advisor
+(ATA) portfolio. `GET /v1/portfolio` is its sole confirmed-state source. The former CPA editor,
+autosave, and Analyze flow remain in the source tree for legacy coverage but are no longer in app
+navigation. History still displays locally saved CPA analyses pending a separate cutover. The app
+does not execute trades.
 
 ## Configuration
 
@@ -22,9 +19,15 @@ advisor only: it has no exchange connection and never executes a trade.
 - Debug backend: `CPA_BACKEND_BASE_URL=http://127.0.0.1:8000`
 - Release backend:
   `CPA_BACKEND_BASE_URL=https://crypto-portfolio-advisor-api.onrender.com`
+- ATA backend: set the separate, non-secret `ATA_BACKEND_BASE_URL` app-target build setting for
+  each configuration before using the ATA Dashboard. Both configurations default to empty and
+  show a configuration state; neither falls back to the CPA URL. The setting is copied into the
+  corresponding Info.plist. Release accepts only a non-local HTTPS ATA URL. Debug may use a
+  local HTTP ATA service under its existing local-network allowance. Do not put credentials in
+  build settings, scheme arguments, or Info.plist.
 - Temporary app bundle identifier: `com.example.CryptoPortfolioAdvisor`
 
-`PortfolioAPIConfiguration` reads that one build-setting-backed Info.plist key. Release accepts only HTTPS
+`PortfolioAPIConfiguration` reads the CPA build-setting-backed Info.plist key. Release accepts only HTTPS
 and rejects localhost/loopback. Debug alone has `NSAllowsLocalNetworking`; Release has no insecure
 ATS exception. The Release URL targets the approved Render staging deployment. Replace the bundle
 identifier only after its real value is approved, then verify the signed build against the
@@ -36,7 +39,18 @@ operator may pass the approved staging HTTPS value as a Release-compatible build
 for a signed staging smoke build; the compiled non-Debug validation still enforces HTTPS and rejects
 loopback hosts. Never weaken ATS for staging.
 
-## Dashboard and submission
+## Active ATA Dashboard
+
+The Dashboard checks for a valid ATA URL and a Keychain bearer credential before one initial
+portfolio GET. A secure credential sheet permits saving or replacing a token without displaying
+the stored value; deleting it immediately hides the server portfolio. A user can explicitly
+refresh or retry a read. Failed refreshes leave the last successfully loaded server portfolio
+visible with a stale-data notice. Late GET responses are ignored using request generations.
+Server revision and account-level holdings, aggregate holdings, financial settings, core
+positions, and limit orders are displayed without local valuation or editing. An uninitialized
+server is shown explicitly; old CPA drafts are never uploaded or treated as confirmed state.
+
+## Legacy CPA Dashboard and submission (inactive)
 
 Dashboard editing uses feature-level `AssetPositionDraft`, `TradingConstraintsDraft`, and
 `LimitOrderDraft` values. Financial fields remain raw `String` values while the user types, so
@@ -61,7 +75,7 @@ Filled or Cancelled receives a resolution timestamp; changing it back to Open cl
 No status change mutates the portfolio—the user is explicitly reminded to update balances after a
 fill. Leverage-off is labeled as spot only.
 
-## Backend connection
+## Legacy CPA backend connection (inactive from Dashboard)
 
 Start the service from `backend/` before running the app:
 
@@ -96,7 +110,7 @@ If the HTTP response is lost after backend completion, Retry sends the exact sav
 and payload. Durable backend idempotency returns the original analysis without another market or
 model call. Local analysis persistence is ID-idempotent, so the same result is not stored twice.
 
-## Local persistence
+## Legacy CPA local persistence (not ATA portfolio authority)
 
 Draft, snapshot, and completed-analysis persistence have separate lifecycle rules:
 

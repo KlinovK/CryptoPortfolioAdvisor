@@ -9,20 +9,20 @@ struct AppFeature {
 
     @ObservableState
     struct State: Equatable {
-        var dashboard = DashboardFeature.State()
+        var dashboard = ATADashboardFeature.State()
         var history = HistoryFeature.State()
         var selectedTab: Tab = .dashboard
     }
 
     enum Action: Equatable {
-        case dashboard(DashboardFeature.Action)
+        case dashboard(ATADashboardFeature.Action)
         case history(HistoryFeature.Action)
         case selectedTabChanged(Tab)
     }
 
     var body: some ReducerOf<Self> {
         Scope(state: \.dashboard, action: \.dashboard) {
-            DashboardFeature()
+            ATADashboardFeature()
         }
 
         Scope(state: \.history, action: \.history) {
@@ -31,7 +31,7 @@ struct AppFeature {
 
         Reduce { state, action in
             switch action {
-            case let .selectedTabChanged(tab):
+            case .selectedTabChanged(let tab):
                 state.selectedTab = tab
                 return .none
 

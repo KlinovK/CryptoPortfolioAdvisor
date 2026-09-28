@@ -5,7 +5,8 @@ import XCTest
 @testable import CryptoPortfolioAdvisor
 
 @MainActor
-final class DashboardPersistenceTests: XCTestCase {
+// Legacy CPA draft/snapshot behavior is preserved without granting it ATA authority.
+final class LegacyCPADashboardPersistenceTests: XCTestCase {
     func testDashboardRestoresSavedDraft() async {
         let draft = makePersistedDraft()
         var client = PortfolioPersistenceClient.noop

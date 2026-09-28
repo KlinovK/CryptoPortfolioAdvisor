@@ -2,7 +2,7 @@ import ComposableArchitecture
 import Foundation
 
 // Not Codable or feature state. Ordinary printing/reflection never renders the secret.
-struct ATABearerToken: Sendable, CustomStringConvertible, CustomDebugStringConvertible,
+struct ATABearerToken: Equatable, Sendable, CustomStringConvertible, CustomDebugStringConvertible,
     CustomReflectable
 {
     private let value: String

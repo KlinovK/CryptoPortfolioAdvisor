@@ -5,7 +5,8 @@ import XCTest
 @testable import CryptoPortfolioAdvisor
 
 @MainActor
-final class DashboardFeatureTests: XCTestCase {
+// The CPA editor remains compiled but is no longer the app's active Dashboard.
+final class LegacyCPADashboardFeatureTests: XCTestCase {
     func testDashboardStartsWithProductDefaults() {
         let state = DashboardFeature.State()
 
