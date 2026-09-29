@@ -1,8 +1,9 @@
 # iOS application
 
-Step 9F makes the active Dashboard a server-backed view of the confirmed Advanced Trading Advisor
-(ATA) portfolio with account and financial/core-policy editing. `GET /v1/portfolio` and complete
-successful mutation responses are its only confirmed-state sources. The former CPA editor,
+Step 9G makes the active Dashboard a server-backed view of the confirmed Advanced Trading Advisor
+(ATA) portfolio with account, financial/core-policy, and limit-order lifecycle editing.
+`GET /v1/portfolio` and complete successful mutation responses are its only confirmed-state
+sources. The former CPA editor,
 autosave, and Analyze flow remain in the source tree for legacy coverage but are no longer in app
 navigation. History still displays locally saved CPA analyses pending a separate cutover. The app
 does not execute trades.
@@ -48,12 +49,14 @@ the stored value; deleting it immediately hides the server portfolio. A user can
 refresh or retry a read. Failed refreshes leave the last successfully loaded server portfolio
 visible with a stale-data notice. Late GET responses are ignored using request generations.
 Server revision and account-level holdings, aggregate holdings, financial settings, core
-positions, and limit orders are displayed without local valuation. Account and policy edits are
-transient drafts, submitted with the current server revision; only the complete server response
+positions, and limit orders are displayed without local valuation. Account, policy, and order edits
+are transient drafts, submitted with the current server revision; only the complete server response
 confirms a change. Revision conflicts and uncertain outcomes require a fresh server read and
-manual review, never an automatic replay. Limit orders remain read-only. An
-uninitialized server is shown explicitly; old CPA drafts are never uploaded or treated as
-confirmed state.
+manual review, never an automatic replay. Open limit orders can be created, cancelled, or
+expired through ATA; confirming an external fill requires the complete actual post-fill holdings
+of the owning account and an explicit USDT/USDC settlement choice. None of these actions executes
+an exchange trade. An uninitialized server is shown explicitly; old CPA drafts are never uploaded
+or treated as confirmed state.
 
 ## Legacy CPA Dashboard and submission (inactive)
 

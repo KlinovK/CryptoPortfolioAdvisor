@@ -34,6 +34,10 @@ struct ATADashboardFeature {
         case delete(UUID)
         case financialSettings
         case corePosition(AssetSymbol)
+        case createLimitOrder
+        case cancelLimitOrder(UUID)
+        case expireLimitOrder(UUID)
+        case confirmOrderFilled(UUID)
     }
 
     enum MutationIssue: Equatable, Sendable {
@@ -59,6 +63,10 @@ struct ATADashboardFeature {
         case delete(UUID, ATADeleteAccountRequestDTO)
         case financialSettings(ATAUpdateFinancialSettingsRequestDTO)
         case corePosition(AssetSymbol, ATAUpdateCorePositionRequestDTO)
+        case createLimitOrder(ATACreateOrderRequestDTO)
+        case cancelLimitOrder(UUID, ATAOrderLifecycleRequestDTO)
+        case expireLimitOrder(UUID, ATAOrderLifecycleRequestDTO)
+        case confirmOrderFilled(UUID, ATAConfirmOrderFilledRequestDTO)
     }
 
     @ObservableState
@@ -71,6 +79,8 @@ struct ATADashboardFeature {
         var credentialOperation: CredentialOperation = .idle
         var editor: ATAAccountEditor?
         var policyEditor: ATAPolicyEditor?
+        var orderEditor: ATAOrderEditor?
+        var orderLifecycle: ATAOrderLifecycleDraft?
         var pendingDeletion: UUID?
         var mutationInFlight: PortfolioMutationKind?
         var mutationGeneration = 0
@@ -121,6 +131,25 @@ struct ATADashboardFeature {
         case policySecondValueChanged(String)
         case policyEditorCancelled
         case policyEditorSubmitTapped
+        case createLimitOrderTapped
+        case confirmExternalFillTapped(UUID)
+        case orderAccountChanged(UUID)
+        case orderAssetChanged(AssetSymbol)
+        case orderSideChanged(ATAOrderSide)
+        case orderTargetPriceChanged(String)
+        case orderQuantityChanged(String)
+        case orderSettlementChanged(AssetSymbol)
+        case orderHoldingAdded(UUID)
+        case orderHoldingRemoved(UUID)
+        case orderHoldingSymbolChanged(UUID, String)
+        case orderHoldingAmountChanged(UUID, String)
+        case orderEditorCancelled
+        case orderEditorSubmitTapped
+        case orderLifecycleTapped(UUID, ATAOrderLifecycleDraft.Operation)
+        case orderLifecycleConfirmed
+        case orderLifecycleDismissed
+        case orderLifecycleDiscarded
+        case orderLifecycleReviewTapped
         case deleteAccountTapped(UUID)
         case deleteAccountConfirmed(UUID)
         case deleteAccountConfirmationDismissed
@@ -155,6 +184,8 @@ struct ATADashboardFeature {
                     }
                     if state.portfolio?.revision != portfolio.revision {
                         state.pendingDeletion = nil
+                        state.orderLifecycle?.needsReview = true
+                        state.orderLifecycle?.confirmationPresented = false
                     }
                     if state.editor != nil && state.portfolio?.revision != portfolio.revision {
                         state.editor?.needsReview = true
@@ -163,14 +194,22 @@ struct ATADashboardFeature {
                     {
                         state.policyEditor?.needsReview = true
                     }
+                    if state.orderEditor != nil && state.portfolio?.revision != portfolio.revision {
+                        state.orderEditor?.needsReview = true
+                    }
                     state.portfolio = portfolio
                     state.loadState = .loaded
                     if state.reconciliationRequired {
                         state.reconciliationRequired = false
-                        if state.editor != nil || state.policyEditor != nil {
+                        if state.editor != nil || state.policyEditor != nil
+                            || state.orderEditor != nil || state.orderLifecycle != nil
+                        {
                             state.mutationIssue = .reviewRequired
                             state.editor?.needsReview = true
                             state.policyEditor?.needsReview = true
+                            state.orderEditor?.needsReview = true
+                            state.orderLifecycle?.needsReview = true
+                            state.orderLifecycle?.confirmationPresented = false
                         } else {
                             state.mutationIssue = nil
                         }
@@ -204,6 +243,8 @@ struct ATADashboardFeature {
                 state.portfolio = nil
                 state.editor = nil
                 state.policyEditor = nil
+                state.orderEditor = nil
+                state.orderLifecycle = nil
                 state.pendingDeletion = nil
                 state.mutationInFlight = nil
                 state.mutationIssue = nil
@@ -243,6 +284,8 @@ struct ATADashboardFeature {
                 state.portfolio = nil
                 state.editor = nil
                 state.policyEditor = nil
+                state.orderEditor = nil
+                state.orderLifecycle = nil
                 state.pendingDeletion = nil
                 state.mutationInFlight = nil
                 state.mutationIssue = nil
@@ -271,7 +314,9 @@ struct ATADashboardFeature {
                 return .none
 
             case .createAccountTapped:
-                guard state.canSubmitPortfolioMutation, state.policyEditor == nil else {
+                guard state.canSubmitPortfolioMutation, state.policyEditor == nil,
+                    state.orderEditor == nil, state.orderLifecycle == nil
+                else {
                     return .none
                 }
                 state.editor = ATAAccountEditor(kind: .create)
@@ -280,6 +325,7 @@ struct ATADashboardFeature {
 
             case .renameAccountTapped(let id):
                 guard state.canSubmitPortfolioMutation, state.policyEditor == nil,
+                    state.orderEditor == nil, state.orderLifecycle == nil,
                     let account = state.portfolio?.accounts.first(where: { $0.id == id })
                 else { return .none }
                 state.editor = ATAAccountEditor(kind: .rename(id), name: account.name)
@@ -288,6 +334,7 @@ struct ATADashboardFeature {
 
             case .editHoldingsTapped(let id):
                 guard state.canSubmitPortfolioMutation, state.policyEditor == nil,
+                    state.orderEditor == nil, state.orderLifecycle == nil,
                     let account = state.portfolio?.accounts.first(where: { $0.id == id }),
                     let holdings = try? account.positions.map({ position in
                         ATAHoldingDraft(
@@ -344,6 +391,8 @@ struct ATADashboardFeature {
                 }
                 state.editor?.needsReview = false
                 state.policyEditor?.needsReview = false
+                state.orderEditor?.needsReview = false
+                state.orderLifecycle?.needsReview = false
                 state.mutationIssue = nil
                 return .none
 
@@ -369,6 +418,7 @@ struct ATADashboardFeature {
 
             case .editFinancialSettingsTapped:
                 guard state.canSubmitPortfolioMutation, state.editor == nil,
+                    state.orderEditor == nil, state.orderLifecycle == nil,
                     let settings = state.portfolio?.financialSettings,
                     let editor = try? ATAPolicyEditor(financialSettings: settings)
                 else { return .none }
@@ -378,6 +428,7 @@ struct ATADashboardFeature {
 
             case .editCorePositionTapped(let symbol):
                 guard state.canSubmitPortfolioMutation, state.editor == nil,
+                    state.orderEditor == nil, state.orderLifecycle == nil,
                     let core = state.portfolio?.corePositions.first(where: { $0.symbol == symbol }),
                     let editor = try? ATAPolicyEditor(corePosition: core)
                 else { return .none }
@@ -419,8 +470,170 @@ struct ATADashboardFeature {
                     return .none
                 }
 
+            case .createLimitOrderTapped:
+                guard state.canSubmitPortfolioMutation, state.editor == nil,
+                    state.policyEditor == nil, state.orderEditor == nil,
+                    state.orderLifecycle == nil,
+                    let portfolio = state.portfolio
+                else { return .none }
+                state.orderEditor = ATAOrderEditor(
+                    kind: .create, accountID: portfolio.accounts.first?.id)
+                state.mutationIssue = nil
+                return .none
+
+            case .confirmExternalFillTapped(let id):
+                guard state.canSubmitPortfolioMutation, state.editor == nil,
+                    state.policyEditor == nil, state.orderEditor == nil,
+                    state.orderLifecycle == nil,
+                    let portfolio = state.portfolio,
+                    let order = portfolio.limitOrders.first(where: { $0.id == id }),
+                    order.status == .open,
+                    let account = portfolio.accounts.first(where: { $0.id == order.accountID }),
+                    let holdings = try? account.positions.map({ position in
+                        ATAHoldingDraft(
+                            id: uuid(), symbol: position.symbol.rawValue,
+                            amount: try ATADecimalCodec.encode(position.amount))
+                    })
+                else { return .none }
+                state.orderEditor = ATAOrderEditor(
+                    kind: .externalFill(id), accountID: account.id, asset: order.asset,
+                    side: order.side, holdings: holdings)
+                state.mutationIssue = nil
+                return .none
+
+            case .orderAccountChanged(let id):
+                state.orderEditor?.accountID = id
+                state.orderEditor?.inputError = nil
+                return .none
+            case .orderAssetChanged(let asset):
+                state.orderEditor?.asset = asset
+                state.orderEditor?.inputError = nil
+                return .none
+            case .orderSideChanged(let side):
+                state.orderEditor?.side = side
+                return .none
+            case .orderTargetPriceChanged(let text):
+                state.orderEditor?.targetPrice = text
+                state.orderEditor?.inputError = nil
+                return .none
+            case .orderQuantityChanged(let text):
+                state.orderEditor?.quantityAsset = text
+                state.orderEditor?.inputError = nil
+                return .none
+            case .orderSettlementChanged(let asset):
+                state.orderEditor?.settlementAsset = asset
+                state.orderEditor?.inputError = nil
+                return .none
+            case .orderHoldingAdded(let id):
+                state.orderEditor?.holdings.append(
+                    ATAHoldingDraft(id: id, symbol: "", amount: ""))
+                state.orderEditor?.inputError = nil
+                return .none
+            case .orderHoldingRemoved(let id):
+                state.orderEditor?.holdings.removeAll { $0.id == id }
+                state.orderEditor?.inputError = nil
+                return .none
+            case .orderHoldingSymbolChanged(let id, let text):
+                if let index = state.orderEditor?.holdings.firstIndex(where: { $0.id == id }) {
+                    state.orderEditor?.holdings[index].symbol = text
+                    state.orderEditor?.inputError = nil
+                }
+                return .none
+            case .orderHoldingAmountChanged(let id, let text):
+                if let index = state.orderEditor?.holdings.firstIndex(where: { $0.id == id }) {
+                    state.orderEditor?.holdings[index].amount = text
+                    state.orderEditor?.inputError = nil
+                }
+                return .none
+            case .orderEditorCancelled:
+                guard state.mutationInFlight == nil else { return .none }
+                state.orderEditor = nil
+                return .none
+            case .orderEditorSubmitTapped:
+                guard state.canSubmitPortfolioMutation, var editor = state.orderEditor,
+                    !editor.needsReview, let portfolio = state.portfolio
+                else { return .none }
+                do {
+                    let request: PortfolioRequest
+                    let kind: PortfolioMutationKind
+                    switch editor.kind {
+                    case .create:
+                        request = .createLimitOrder(
+                            try editor.validatedCreateRequest(portfolio: portfolio))
+                        kind = .createLimitOrder
+                    case .externalFill(let id):
+                        request = .confirmOrderFilled(
+                            id, try editor.validatedFillRequest(portfolio: portfolio))
+                        kind = .confirmOrderFilled(id)
+                    }
+                    editor.inputError = nil
+                    state.orderEditor = editor
+                    return beginMutation(&state, request: request, kind: kind)
+                } catch let error as ATAOrderEditor.InputError {
+                    editor.inputError = error
+                    state.orderEditor = editor
+                    return .none
+                } catch {
+                    editor.inputError = .holdings(.amount)
+                    state.orderEditor = editor
+                    return .none
+                }
+
+            case .orderLifecycleTapped(let id, let operation):
+                guard state.canSubmitPortfolioMutation, state.editor == nil,
+                    state.policyEditor == nil, state.orderEditor == nil,
+                    state.orderLifecycle == nil,
+                    state.portfolio?.limitOrders.contains(where: {
+                        $0.id == id && $0.status == .open
+                    }) == true
+                else { return .none }
+                state.orderLifecycle = ATAOrderLifecycleDraft(
+                    orderID: id, operation: operation)
+                state.mutationIssue = nil
+                return .none
+            case .orderLifecycleDismissed:
+                guard state.mutationInFlight == nil else { return .none }
+                state.orderLifecycle?.confirmationPresented = false
+                return .none
+            case .orderLifecycleDiscarded:
+                guard state.mutationInFlight == nil else { return .none }
+                state.orderLifecycle = nil
+                return .none
+            case .orderLifecycleReviewTapped:
+                guard state.canSubmitPortfolioMutation,
+                    let draft = state.orderLifecycle, !draft.needsReview,
+                    state.portfolio?.limitOrders.contains(where: {
+                        $0.id == draft.orderID && $0.status == .open
+                    }) == true
+                else { return .none }
+                state.orderLifecycle?.confirmationPresented = true
+                return .none
+            case .orderLifecycleConfirmed:
+                guard state.canSubmitPortfolioMutation,
+                    var draft = state.orderLifecycle, !draft.needsReview,
+                    let portfolio = state.portfolio,
+                    portfolio.limitOrders.contains(where: {
+                        $0.id == draft.orderID && $0.status == .open
+                    }),
+                    let body = try? ATAOrderLifecycleRequestDTO(
+                        expectedRevision: portfolio.revision)
+                else { return .none }
+                draft.confirmationPresented = false
+                state.orderLifecycle = draft
+                switch draft.operation {
+                case .cancel:
+                    return beginMutation(
+                        &state, request: .cancelLimitOrder(draft.orderID, body),
+                        kind: .cancelLimitOrder(draft.orderID))
+                case .expire:
+                    return beginMutation(
+                        &state, request: .expireLimitOrder(draft.orderID, body),
+                        kind: .expireLimitOrder(draft.orderID))
+                }
+
             case .deleteAccountTapped(let id):
                 guard state.canSubmitPortfolioMutation, state.policyEditor == nil,
+                    state.orderEditor == nil, state.orderLifecycle == nil,
                     state.portfolio?.accounts.contains(where: { $0.id == id }) == true
                 else { return .none }
                 state.pendingDeletion = id
@@ -432,6 +645,7 @@ struct ATADashboardFeature {
 
             case .deleteAccountConfirmed(let id):
                 guard state.canSubmitPortfolioMutation, state.policyEditor == nil,
+                    state.orderEditor == nil, state.orderLifecycle == nil,
                     state.pendingDeletion == id,
                     state.portfolio?.accounts.contains(where: { $0.id == id }) == true,
                     let revision = state.portfolio?.revision,
@@ -450,6 +664,8 @@ struct ATADashboardFeature {
                     state.loadState = .loaded
                     state.editor = nil
                     state.policyEditor = nil
+                    state.orderEditor = nil
+                    state.orderLifecycle = nil
                     state.mutationIssue = nil
                     state.reconciliationRequired = false
                     return .none
@@ -467,11 +683,17 @@ struct ATADashboardFeature {
                         state.reconciliationRequired = true
                         state.editor?.needsReview = true
                         state.policyEditor?.needsReview = true
+                        state.orderEditor?.needsReview = true
+                        state.orderLifecycle?.needsReview = true
+                        state.orderLifecycle?.confirmationPresented = false
                         return beginLoad(&state)
                     }
                     if issue == .stateConflict {
                         state.editor?.needsReview = true
                         state.policyEditor?.needsReview = true
+                        state.orderEditor?.needsReview = true
+                        state.orderLifecycle?.needsReview = true
+                        state.orderLifecycle?.confirmationPresented = false
                     }
                     return .none
                 }
@@ -594,6 +816,14 @@ struct ATADashboardFeature {
                         current = try await client.updateFinancialSettings(body)
                     case .corePosition(let symbol, let body):
                         current = try await client.updateCorePosition(symbol, body)
+                    case .createLimitOrder(let body):
+                        current = try await client.createLimitOrder(body)
+                    case .cancelLimitOrder(let id, let body):
+                        current = try await client.cancelLimitOrder(id, body)
+                    case .expireLimitOrder(let id, let body):
+                        current = try await client.expireLimitOrder(id, body)
+                    case .confirmOrderFilled(let id, let body):
+                        current = try await client.confirmLimitOrderFilled(id, body)
                     }
                     await send(
                         .mutationFinished(generation: generation, result: .succeeded(current)))

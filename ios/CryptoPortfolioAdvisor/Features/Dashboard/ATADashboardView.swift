@@ -42,6 +42,23 @@ struct ATADashboardView: View {
                 ATAPolicyEditorView(store: store)
                     .interactiveDismissDisabled(store.mutationInFlight != nil)
             }
+            .sheet(isPresented: orderEditorIsPresented) {
+                ATAOrderEditorView(store: store)
+                    .interactiveDismissDisabled(store.mutationInFlight != nil)
+            }
+            .confirmationDialog(
+                orderLifecycleTitle, isPresented: orderLifecycleIsPresented,
+                titleVisibility: .visible
+            ) {
+                if let draft = store.orderLifecycle {
+                    Button(orderLifecycleLabel(draft.operation), role: .destructive) {
+                        store.send(.orderLifecycleConfirmed)
+                    }
+                }
+            } message: {
+                Text(
+                    "Only ATA's confirmed order status will change. No exchange order is executed.")
+            }
             .confirmationDialog(
                 "Delete this account?", isPresented: accountDeletionIsPresented,
                 titleVisibility: .visible
@@ -216,6 +233,29 @@ struct ATADashboardView: View {
         )
     }
 
+    private var orderEditorIsPresented: Binding<Bool> {
+        Binding(
+            get: { store.orderEditor != nil },
+            set: { if !$0 { store.send(.orderEditorCancelled) } }
+        )
+    }
+
+    private var orderLifecycleIsPresented: Binding<Bool> {
+        Binding(
+            get: { store.orderLifecycle?.confirmationPresented == true },
+            set: { if !$0 { store.send(.orderLifecycleDismissed) } }
+        )
+    }
+
+    private var orderLifecycleTitle: String {
+        guard let draft = store.orderLifecycle else { return "Limit order" }
+        return draft.operation == .cancel ? "Cancel this open order?" : "Expire this open order?"
+    }
+
+    private func orderLifecycleLabel(_ operation: ATAOrderLifecycleDraft.Operation) -> String {
+        operation == .cancel ? "Cancel Limit Order" : "Expire Limit Order"
+    }
+
     private func mutationLabel(_ kind: ATADashboardFeature.PortfolioMutationKind) -> String {
         switch kind {
         case .create: "account"
@@ -224,6 +264,10 @@ struct ATADashboardView: View {
         case .delete: "account deletion"
         case .financialSettings: "financial settings"
         case .corePosition: "core policy"
+        case .createLimitOrder: "limit order"
+        case .cancelLimitOrder: "order cancellation"
+        case .expireLimitOrder: "order expiration"
+        case .confirmOrderFilled: "external fill"
         }
     }
 
@@ -311,9 +355,46 @@ struct ATADashboardView: View {
                     Text("Order ID: \(order.id.uuidString)")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                    if order.status == .open {
+                        Menu("Order actions") {
+                            Button("Confirm External Fill") {
+                                store.send(.confirmExternalFillTapped(order.id))
+                            }
+                            Button("Cancel Order", role: .destructive) {
+                                store.send(.orderLifecycleTapped(order.id, .cancel))
+                            }
+                            Button("Expire Order", role: .destructive) {
+                                store.send(.orderLifecycleTapped(order.id, .expire))
+                            }
+                        }
+                        .disabled(!store.canSubmitPortfolioMutation)
+                        .accessibilityIdentifier("ataOrderActions_\(order.id.uuidString)")
+                    }
                 }
             }
             if portfolio.limitOrders.isEmpty { Text("No limit orders") }
+            if let draft = store.orderLifecycle, !draft.confirmationPresented {
+                Text(
+                    "Review \(orderLifecycleLabel(draft.operation).lowercased()) for order \(draft.orderID.uuidString) against the current server status."
+                )
+                .foregroundStyle(.secondary)
+                if draft.needsReview {
+                    Button("I Reviewed the Portfolio") {
+                        store.send(.editorReviewAcknowledged)
+                    }
+                    .disabled(store.reconciliationRequired)
+                } else {
+                    Button("Review Order Action") {
+                        store.send(.orderLifecycleReviewTapped)
+                    }
+                }
+                Button("Discard Order Action") { store.send(.orderLifecycleDiscarded) }
+            }
+            Button("Create Limit Order", systemImage: "plus") {
+                store.send(.createLimitOrderTapped)
+            }
+            .disabled(!store.canSubmitPortfolioMutation)
+            .accessibilityIdentifier("ataOrderCreate")
         }
     }
 
