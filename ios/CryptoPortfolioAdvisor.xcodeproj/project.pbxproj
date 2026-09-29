@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF0000000000000000000101 /* ATAPolicyEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000001 /* ATAPolicyEditor.swift */; };
+		AF0000000000000000000102 /* ATAPolicyEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000002 /* ATAPolicyEditorView.swift */; };
+		AF0000000000000000000103 /* ATAPolicyMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF0000000000000000000003 /* ATAPolicyMutationTests.swift */; };
 		AE0000000000000000000101 /* ATAAccountEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0000000000000000000001 /* ATAAccountEditor.swift */; };
 		AE0000000000000000000102 /* ATAAccountEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0000000000000000000002 /* ATAAccountEditorView.swift */; };
 		AE0000000000000000000103 /* ATAAccountMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0000000000000000000003 /* ATAAccountMutationTests.swift */; };
@@ -102,6 +105,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AF0000000000000000000001 /* ATAPolicyEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAPolicyEditor.swift; sourceTree = "<group>"; };
+		AF0000000000000000000002 /* ATAPolicyEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAPolicyEditorView.swift; sourceTree = "<group>"; };
+		AF0000000000000000000003 /* ATAPolicyMutationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAPolicyMutationTests.swift; sourceTree = "<group>"; };
 		AE0000000000000000000001 /* ATAAccountEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAccountEditor.swift; sourceTree = "<group>"; };
 		AE0000000000000000000002 /* ATAAccountEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAccountEditorView.swift; sourceTree = "<group>"; };
 		AE0000000000000000000003 /* ATAAccountMutationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAccountMutationTests.swift; sourceTree = "<group>"; };
@@ -253,6 +259,8 @@
 		AA0000000000000000000014 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				AF0000000000000000000001 /* ATAPolicyEditor.swift */,
+				AF0000000000000000000002 /* ATAPolicyEditorView.swift */,
 				AE0000000000000000000001 /* ATAAccountEditor.swift */,
 				AE0000000000000000000002 /* ATAAccountEditorView.swift */,
 				AD0000000000000000000001 /* ATADashboardFeature.swift */,
@@ -313,6 +321,7 @@
 		AA0000000000000000000019 /* CryptoPortfolioAdvisorTests */ = {
 			isa = PBXGroup;
 			children = (
+				AF0000000000000000000003 /* ATAPolicyMutationTests.swift */,
 				AE0000000000000000000003 /* ATAAccountMutationTests.swift */,
 				AD0000000000000000000003 /* ATADashboardFeatureTests.swift */,
 				AC0000000000000000000007 /* ATAClientConcurrencyTests.swift */,
@@ -612,6 +621,8 @@
 				AA0000000000000000000202 /* AppView.swift in Sources */,
 				AA0000000000000000000203 /* DashboardFeature.swift in Sources */,
 				AD0000000000000000000101 /* ATADashboardFeature.swift in Sources */,
+				AF0000000000000000000101 /* ATAPolicyEditor.swift in Sources */,
+				AF0000000000000000000102 /* ATAPolicyEditorView.swift in Sources */,
 				AE0000000000000000000101 /* ATAAccountEditor.swift in Sources */,
 				AE0000000000000000000102 /* ATAAccountEditorView.swift in Sources */,
 				AD0000000000000000000102 /* ATADashboardView.swift in Sources */,
@@ -668,6 +679,7 @@
 				AA0000000000000000000213 /* DomainModelTests.swift in Sources */,
 				AA0000000000000000000216 /* DashboardFeatureTests.swift in Sources */,
 				AD0000000000000000000103 /* ATADashboardFeatureTests.swift in Sources */,
+				AF0000000000000000000103 /* ATAPolicyMutationTests.swift in Sources */,
 				AE0000000000000000000103 /* ATAAccountMutationTests.swift in Sources */,
 				AA000000000000000000021C /* DashboardPersistenceTests.swift in Sources */,
 				AA000000000000000000021D /* PersistenceStoreTests.swift in Sources */,

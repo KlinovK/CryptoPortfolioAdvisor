@@ -203,14 +203,17 @@ extension ATADashboardFeature.MutationIssue {
             "Portfolio changed on the server. Reloading; review your draft before resubmitting."
         case .stateConflict:
             "The server rejected this change against the current portfolio. Review it before resubmitting."
-        case .resourceNotFound: "This account was not found on the server. Reloading for review."
-        case .validation: "The server rejected the account details. Review the draft and try again."
+        case .resourceNotFound:
+            "The requested portfolio resource was not found. Reloading for review."
+        case .validation:
+            "The server rejected the submitted details. Review the draft and try again."
         case .uncertain:
             "The update outcome is uncertain. Waiting for a server reload before further changes."
         case .reviewRequired:
             "Server portfolio reloaded. Review your draft before another submission."
-        case .authentication: "ATA rejected the credential. Replace it before editing accounts."
-        case .service: "The account update was not accepted. Review before trying again."
+        case .authentication:
+            "ATA rejected the credential. Replace it before editing the portfolio."
+        case .service: "The portfolio update was not accepted. Review before trying again."
         }
     }
 }

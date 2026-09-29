@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import Foundation
 
-// The active Dashboard is a server read model. The CPA editor remains isolated for legacy tests.
+// The active Dashboard owns transient edits; only server responses confirm portfolio state.
 @Reducer
 struct ATADashboardFeature {
     enum Failure: Equatable, Sendable {
@@ -27,11 +27,13 @@ struct ATADashboardFeature {
         case deleting
     }
 
-    enum AccountMutationKind: Equatable, Sendable {
+    enum PortfolioMutationKind: Equatable, Sendable {
         case create
         case rename(UUID)
         case holdings(UUID)
         case delete(UUID)
+        case financialSettings
+        case corePosition(AssetSymbol)
     }
 
     enum MutationIssue: Equatable, Sendable {
@@ -50,11 +52,13 @@ struct ATADashboardFeature {
         case failed(MutationIssue)
     }
 
-    private enum AccountRequest: Sendable {
+    private enum PortfolioRequest: Sendable {
         case create(ATACreateAccountRequestDTO)
         case rename(UUID, ATARenameAccountRequestDTO)
         case holdings(UUID, ATAReplaceAccountHoldingsRequestDTO)
         case delete(UUID, ATADeleteAccountRequestDTO)
+        case financialSettings(ATAUpdateFinancialSettingsRequestDTO)
+        case corePosition(AssetSymbol, ATAUpdateCorePositionRequestDTO)
     }
 
     @ObservableState
@@ -66,18 +70,20 @@ struct ATADashboardFeature {
         var requestGeneration = 0
         var credentialOperation: CredentialOperation = .idle
         var editor: ATAAccountEditor?
+        var policyEditor: ATAPolicyEditor?
         var pendingDeletion: UUID?
-        var mutationInFlight: AccountMutationKind?
+        var mutationInFlight: PortfolioMutationKind?
         var mutationGeneration = 0
         var reconciliationRequired = false
         var mutationIssue: MutationIssue?
 
         var isRefreshing: Bool { loadState == .loading && portfolio != nil }
-        var canSubmitAccountMutation: Bool {
+        var canSubmitPortfolioMutation: Bool {
             portfolio != nil && configurationAvailable && credentialOperation == .idle
                 && mutationInFlight == nil && !reconciliationRequired
                 && (loadState == .loaded || loadState == .loading)
         }
+        var canSubmitAccountMutation: Bool { canSubmitPortfolioMutation }
     }
 
     enum LoadResult: Equatable, Sendable {
@@ -109,6 +115,12 @@ struct ATADashboardFeature {
         case editorCancelled
         case editorReviewAcknowledged
         case editorSubmitTapped
+        case editFinancialSettingsTapped
+        case editCorePositionTapped(AssetSymbol)
+        case policyFirstValueChanged(String)
+        case policySecondValueChanged(String)
+        case policyEditorCancelled
+        case policyEditorSubmitTapped
         case deleteAccountTapped(UUID)
         case deleteAccountConfirmed(UUID)
         case deleteAccountConfirmationDismissed
@@ -147,13 +159,18 @@ struct ATADashboardFeature {
                     if state.editor != nil && state.portfolio?.revision != portfolio.revision {
                         state.editor?.needsReview = true
                     }
+                    if state.policyEditor != nil && state.portfolio?.revision != portfolio.revision
+                    {
+                        state.policyEditor?.needsReview = true
+                    }
                     state.portfolio = portfolio
                     state.loadState = .loaded
                     if state.reconciliationRequired {
                         state.reconciliationRequired = false
-                        if state.editor != nil {
+                        if state.editor != nil || state.policyEditor != nil {
                             state.mutationIssue = .reviewRequired
                             state.editor?.needsReview = true
+                            state.policyEditor?.needsReview = true
                         } else {
                             state.mutationIssue = nil
                         }
@@ -186,6 +203,7 @@ struct ATADashboardFeature {
                 let interruptedMutation = state.mutationInFlight != nil
                 state.portfolio = nil
                 state.editor = nil
+                state.policyEditor = nil
                 state.pendingDeletion = nil
                 state.mutationInFlight = nil
                 state.mutationIssue = nil
@@ -224,6 +242,7 @@ struct ATADashboardFeature {
                 let interruptedMutation = state.mutationInFlight != nil
                 state.portfolio = nil
                 state.editor = nil
+                state.policyEditor = nil
                 state.pendingDeletion = nil
                 state.mutationInFlight = nil
                 state.mutationIssue = nil
@@ -252,13 +271,15 @@ struct ATADashboardFeature {
                 return .none
 
             case .createAccountTapped:
-                guard state.canSubmitAccountMutation else { return .none }
+                guard state.canSubmitPortfolioMutation, state.policyEditor == nil else {
+                    return .none
+                }
                 state.editor = ATAAccountEditor(kind: .create)
                 state.mutationIssue = nil
                 return .none
 
             case .renameAccountTapped(let id):
-                guard state.canSubmitAccountMutation,
+                guard state.canSubmitPortfolioMutation, state.policyEditor == nil,
                     let account = state.portfolio?.accounts.first(where: { $0.id == id })
                 else { return .none }
                 state.editor = ATAAccountEditor(kind: .rename(id), name: account.name)
@@ -266,7 +287,7 @@ struct ATADashboardFeature {
                 return .none
 
             case .editHoldingsTapped(let id):
-                guard state.canSubmitAccountMutation,
+                guard state.canSubmitPortfolioMutation, state.policyEditor == nil,
                     let account = state.portfolio?.accounts.first(where: { $0.id == id }),
                     let holdings = try? account.positions.map({ position in
                         ATAHoldingDraft(
@@ -322,16 +343,17 @@ struct ATADashboardFeature {
                     return .none
                 }
                 state.editor?.needsReview = false
+                state.policyEditor?.needsReview = false
                 state.mutationIssue = nil
                 return .none
 
             case .editorSubmitTapped:
-                guard state.canSubmitAccountMutation, var editor = state.editor,
+                guard state.canSubmitPortfolioMutation, var editor = state.editor,
                     !editor.needsReview,
                     let portfolio = state.portfolio
                 else { return .none }
                 do {
-                    let request = try makeRequest(editor: editor, portfolio: portfolio)
+                    let request = try makeAccountRequest(editor: editor, portfolio: portfolio)
                     editor.inputError = nil
                     state.editor = editor
                     return beginMutation(&state, request: request, kind: kind(for: editor.kind))
@@ -345,8 +367,60 @@ struct ATADashboardFeature {
                     return .none
                 }
 
+            case .editFinancialSettingsTapped:
+                guard state.canSubmitPortfolioMutation, state.editor == nil,
+                    let settings = state.portfolio?.financialSettings,
+                    let editor = try? ATAPolicyEditor(financialSettings: settings)
+                else { return .none }
+                state.policyEditor = editor
+                state.mutationIssue = nil
+                return .none
+
+            case .editCorePositionTapped(let symbol):
+                guard state.canSubmitPortfolioMutation, state.editor == nil,
+                    let core = state.portfolio?.corePositions.first(where: { $0.symbol == symbol }),
+                    let editor = try? ATAPolicyEditor(corePosition: core)
+                else { return .none }
+                state.policyEditor = editor
+                state.mutationIssue = nil
+                return .none
+
+            case .policyFirstValueChanged(let value):
+                state.policyEditor?.firstValue = value
+                state.policyEditor?.inputError = nil
+                return .none
+
+            case .policySecondValueChanged(let value):
+                state.policyEditor?.secondValue = value
+                state.policyEditor?.inputError = nil
+                return .none
+
+            case .policyEditorCancelled:
+                guard state.mutationInFlight == nil else { return .none }
+                state.policyEditor = nil
+                return .none
+
+            case .policyEditorSubmitTapped:
+                guard state.canSubmitPortfolioMutation, var editor = state.policyEditor,
+                    !editor.needsReview, let portfolio = state.portfolio
+                else { return .none }
+                do {
+                    let request = try makePolicyRequest(editor: editor, portfolio: portfolio)
+                    editor.inputError = nil
+                    state.policyEditor = editor
+                    return beginMutation(&state, request: request, kind: kind(for: editor.kind))
+                } catch let error as ATAPolicyEditor.InputError {
+                    editor.inputError = error
+                    state.policyEditor = editor
+                    return .none
+                } catch {
+                    editor.inputError = .unsupportedCorePolicy
+                    state.policyEditor = editor
+                    return .none
+                }
+
             case .deleteAccountTapped(let id):
-                guard state.canSubmitAccountMutation,
+                guard state.canSubmitPortfolioMutation, state.policyEditor == nil,
                     state.portfolio?.accounts.contains(where: { $0.id == id }) == true
                 else { return .none }
                 state.pendingDeletion = id
@@ -357,7 +431,7 @@ struct ATADashboardFeature {
                 return .none
 
             case .deleteAccountConfirmed(let id):
-                guard state.canSubmitAccountMutation,
+                guard state.canSubmitPortfolioMutation, state.policyEditor == nil,
                     state.pendingDeletion == id,
                     state.portfolio?.accounts.contains(where: { $0.id == id }) == true,
                     let revision = state.portfolio?.revision,
@@ -375,6 +449,7 @@ struct ATADashboardFeature {
                     state.portfolio = portfolio
                     state.loadState = .loaded
                     state.editor = nil
+                    state.policyEditor = nil
                     state.mutationIssue = nil
                     state.reconciliationRequired = false
                     return .none
@@ -391,10 +466,12 @@ struct ATADashboardFeature {
                     {
                         state.reconciliationRequired = true
                         state.editor?.needsReview = true
+                        state.policyEditor?.needsReview = true
                         return beginLoad(&state)
                     }
                     if issue == .stateConflict {
                         state.editor?.needsReview = true
+                        state.policyEditor?.needsReview = true
                     }
                     return .none
                 }
@@ -404,9 +481,9 @@ struct ATADashboardFeature {
 
     @Dependency(\.uuid) var uuid
 
-    private func makeRequest(
+    private func makeAccountRequest(
         editor: ATAAccountEditor, portfolio: ATACurrentPortfolio
-    ) throws -> AccountRequest {
+    ) throws -> PortfolioRequest {
         let revision = portfolio.revision
         switch editor.kind {
         case .create:
@@ -439,7 +516,7 @@ struct ATADashboardFeature {
         }
     }
 
-    private func kind(for editor: ATAAccountEditor.Kind) -> AccountMutationKind {
+    private func kind(for editor: ATAAccountEditor.Kind) -> PortfolioMutationKind {
         switch editor {
         case .create: .create
         case .rename(let id): .rename(id)
@@ -447,8 +524,52 @@ struct ATADashboardFeature {
         }
     }
 
+    private func makePolicyRequest(
+        editor: ATAPolicyEditor, portfolio: ATACurrentPortfolio
+    ) throws -> PortfolioRequest {
+        switch editor.kind {
+        case .financialSettings:
+            let values = try editor.financialValues()
+            if values.monthlyExpensesUSD == portfolio.financialSettings.monthlyExpensesUSD
+                && values.targetRunwayMonths
+                    == portfolio.financialSettings.targetExpenseRunwayMonths
+            {
+                throw ATAPolicyEditor.InputError.unchanged
+            }
+            return .financialSettings(
+                try ATAUpdateFinancialSettingsRequestDTO(
+                    expectedRevision: portfolio.revision,
+                    monthlyExpensesUSD: values.monthlyExpensesUSD,
+                    targetExpenseRunwayMonths: values.targetRunwayMonths))
+        case .corePosition(let symbol):
+            guard let current = portfolio.corePositions.first(where: { $0.symbol == symbol })
+            else { throw ATAPolicyEditor.InputError.policyMissing }
+            let holdings =
+                portfolio.aggregatePositions.first(where: { $0.symbol == symbol })?
+                .amount ?? 0
+            let values = try editor.coreValues(aggregateAmount: holdings)
+            if values.hardFloor == current.hardFloor
+                && values.preferredQuantity == current.preferredQuantity
+            {
+                throw ATAPolicyEditor.InputError.unchanged
+            }
+            return .corePosition(
+                symbol,
+                try ATAUpdateCorePositionRequestDTO(
+                    expectedRevision: portfolio.revision, hardFloor: values.hardFloor,
+                    preferredQuantity: values.preferredQuantity))
+        }
+    }
+
+    private func kind(for editor: ATAPolicyEditor.Kind) -> PortfolioMutationKind {
+        switch editor {
+        case .financialSettings: .financialSettings
+        case .corePosition(let symbol): .corePosition(symbol)
+        }
+    }
+
     private func beginMutation(
-        _ state: inout State, request: AccountRequest, kind: AccountMutationKind
+        _ state: inout State, request: PortfolioRequest, kind: PortfolioMutationKind
     ) -> Effect<Action> {
         state.requestGeneration += 1  // Invalidate any earlier GET before the write is sent.
         state.mutationGeneration += 1
@@ -469,6 +590,10 @@ struct ATADashboardFeature {
                         current = try await client.updateAccountHoldings(id, body)
                     case .delete(let id, let body):
                         current = try await client.deleteAccount(id, body)
+                    case .financialSettings(let body):
+                        current = try await client.updateFinancialSettings(body)
+                    case .corePosition(let symbol, let body):
+                        current = try await client.updateCorePosition(symbol, body)
                     }
                     await send(
                         .mutationFinished(generation: generation, result: .succeeded(current)))
@@ -521,7 +646,7 @@ struct ATADashboardFeature {
         guard state.credentialOperation == .idle, state.mutationInFlight == nil else {
             return .none
         }
-        // This generation is the authority boundary: later reads (and Step 9E mutations)
+        // This generation is the authority boundary: later reads and portfolio writes
         // invalidate every earlier GET, irrespective of completion order or timestamp.
         state.requestGeneration += 1
         let generation = state.requestGeneration

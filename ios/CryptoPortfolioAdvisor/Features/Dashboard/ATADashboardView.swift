@@ -38,6 +38,10 @@ struct ATADashboardView: View {
                 ATAAccountEditorView(store: store)
                     .interactiveDismissDisabled(store.mutationInFlight != nil)
             }
+            .sheet(isPresented: policyEditorIsPresented) {
+                ATAPolicyEditorView(store: store)
+                    .interactiveDismissDisabled(store.mutationInFlight != nil)
+            }
             .confirmationDialog(
                 "Delete this account?", isPresented: accountDeletionIsPresented,
                 titleVisibility: .visible
@@ -133,7 +137,7 @@ struct ATADashboardView: View {
                     .accessibilityIdentifier("ataAccountMutationIssue")
             }
             if store.reconciliationRequired && store.credentialOperation == .idle {
-                Text("Account changes are blocked until the server portfolio is reloaded.")
+                Text("Portfolio changes are blocked until the server portfolio is reloaded.")
                     .foregroundStyle(.secondary)
             }
         }
@@ -198,6 +202,13 @@ struct ATADashboardView: View {
         )
     }
 
+    private var policyEditorIsPresented: Binding<Bool> {
+        Binding(
+            get: { store.policyEditor != nil },
+            set: { if !$0 { store.send(.policyEditorCancelled) } }
+        )
+    }
+
     private var accountDeletionIsPresented: Binding<Bool> {
         Binding(
             get: { store.pendingDeletion != nil },
@@ -205,12 +216,14 @@ struct ATADashboardView: View {
         )
     }
 
-    private func mutationLabel(_ kind: ATADashboardFeature.AccountMutationKind) -> String {
+    private func mutationLabel(_ kind: ATADashboardFeature.PortfolioMutationKind) -> String {
         switch kind {
         case .create: "account"
         case .rename: "account name"
         case .holdings: "holdings"
         case .delete: "account deletion"
+        case .financialSettings: "financial settings"
+        case .corePosition: "core policy"
         }
     }
 
@@ -261,6 +274,9 @@ struct ATADashboardView: View {
             LabeledContent(
                 "Target runway",
                 value: "\(decimal(portfolio.financialSettings.targetExpenseRunwayMonths)) months")
+            Button("Edit Financial Settings") { store.send(.editFinancialSettingsTapped) }
+                .disabled(!store.canSubmitPortfolioMutation)
+                .accessibilityIdentifier("ataFinancialSettingsEdit")
         }
 
         Section("Core positions") {
@@ -270,6 +286,11 @@ struct ATADashboardView: View {
                     Text("Hard floor: \(decimal(core.hardFloor))")
                     Text("Preferred: \(decimal(core.preferredQuantity))")
                     Text("Policy version: \(core.policyVersion)")
+                    Button("Edit \(core.symbol.rawValue) Core Policy") {
+                        store.send(.editCorePositionTapped(core.symbol))
+                    }
+                    .disabled(!store.canSubmitPortfolioMutation)
+                    .accessibilityIdentifier("ataCorePolicyEdit_\(core.symbol.rawValue)")
                 }
             }
             if portfolio.corePositions.isEmpty { Text("No core-position policies") }
