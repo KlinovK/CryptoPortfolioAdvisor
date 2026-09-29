@@ -341,6 +341,7 @@ final class ATADashboardFeatureTests: XCTestCase {
         let token = try ATABearerToken("synthetic-offline-token")
         await store.send(.credentialSaveRequested(token)) {
             $0.requestGeneration = 1
+            $0.mutationGeneration = 1
             $0.loadState = .credentialRequired
             $0.credentialOperation = .saving
         }
@@ -355,6 +356,7 @@ final class ATADashboardFeatureTests: XCTestCase {
         }
         await store.send(.credentialDeleteRequested) {
             $0.requestGeneration = 3
+            $0.mutationGeneration = 2
             $0.portfolio = nil
             $0.loadState = .credentialRequired
             $0.credentialOperation = .deleting
@@ -379,6 +381,7 @@ final class ATADashboardFeatureTests: XCTestCase {
         }
         await store.send(.credentialSaveRequested(try ATABearerToken("new-synthetic-token"))) {
             $0.requestGeneration = 1
+            $0.mutationGeneration = 1
             $0.portfolio = nil
             $0.loadState = .credentialRequired
             $0.credentialOperation = .saving

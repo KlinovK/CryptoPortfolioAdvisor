@@ -24,13 +24,31 @@ struct ATADashboardView: View {
                         Button("Refresh", systemImage: "arrow.clockwise") {
                             store.send(.refreshTapped)
                         }
-                        .disabled(store.credentialOperation != .idle)
+                        .disabled(
+                            store.credentialOperation != .idle || store.mutationInFlight != nil
+                        )
                         .accessibilityIdentifier("ataPortfolioRefresh")
                     }
                 }
             }
             .sheet(isPresented: $showsCredentialSheet, onDismiss: clearCredentialInput) {
                 credentialSheet
+            }
+            .sheet(isPresented: accountEditorIsPresented) {
+                ATAAccountEditorView(store: store)
+                    .interactiveDismissDisabled(store.mutationInFlight != nil)
+            }
+            .confirmationDialog(
+                "Delete this account?", isPresented: accountDeletionIsPresented,
+                titleVisibility: .visible
+            ) {
+                if let id = store.pendingDeletion {
+                    Button("Delete Account", role: .destructive) {
+                        store.send(.deleteAccountConfirmed(id))
+                    }
+                }
+            } message: {
+                Text("The server will reject deletion if portfolio rules or orders prevent it.")
             }
             .confirmationDialog(
                 "Remove ATA credential?", isPresented: $showsDeleteConfirmation,
@@ -105,6 +123,19 @@ struct ATADashboardView: View {
             if store.credentialOperation != .idle {
                 ProgressView("Updating credential…")
             }
+            if let kind = store.mutationInFlight {
+                ProgressView("Saving \(mutationLabel(kind))…")
+                    .accessibilityIdentifier("ataAccountMutationProgress")
+            }
+            if let issue = store.mutationIssue {
+                Text(issue.message)
+                    .foregroundStyle(issue == .reviewRequired ? Color.secondary : Color.red)
+                    .accessibilityIdentifier("ataAccountMutationIssue")
+            }
+            if store.reconciliationRequired && store.credentialOperation == .idle {
+                Text("Account changes are blocked until the server portfolio is reloaded.")
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 
@@ -160,6 +191,29 @@ struct ATADashboardView: View {
         invalidCredentialInput = false
     }
 
+    private var accountEditorIsPresented: Binding<Bool> {
+        Binding(
+            get: { store.editor != nil },
+            set: { if !$0 { store.send(.editorCancelled) } }
+        )
+    }
+
+    private var accountDeletionIsPresented: Binding<Bool> {
+        Binding(
+            get: { store.pendingDeletion != nil },
+            set: { if !$0 { store.send(.deleteAccountConfirmationDismissed) } }
+        )
+    }
+
+    private func mutationLabel(_ kind: ATADashboardFeature.AccountMutationKind) -> String {
+        switch kind {
+        case .create: "account"
+        case .rename: "account name"
+        case .holdings: "holdings"
+        case .delete: "account deletion"
+        }
+    }
+
     @ViewBuilder
     private func portfolioSections(_ portfolio: ATACurrentPortfolio) -> some View {
         Section("Accounts") {
@@ -174,9 +228,23 @@ struct ATADashboardView: View {
                         Text("\(position.symbol.rawValue): \(decimal(position.amount))")
                     }
                     if account.positions.isEmpty { Text("No holdings") }
+                    Menu("Account actions") {
+                        Button("Rename Account") { store.send(.renameAccountTapped(account.id)) }
+                        Button("Edit Holdings") { store.send(.editHoldingsTapped(account.id)) }
+                        Button("Delete Account", role: .destructive) {
+                            store.send(.deleteAccountTapped(account.id))
+                        }
+                    }
+                    .disabled(!store.canSubmitAccountMutation)
+                    .accessibilityIdentifier("ataAccountActions_\(account.id.uuidString)")
                 }
                 .padding(.vertical, 4)
             }
+            Button("Create Account", systemImage: "plus") {
+                store.send(.createAccountTapped)
+            }
+            .disabled(!store.canSubmitAccountMutation)
+            .accessibilityIdentifier("ataAccountCreate")
         }
 
         Section("Aggregate positions") {

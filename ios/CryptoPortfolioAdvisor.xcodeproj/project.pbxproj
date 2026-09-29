@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE0000000000000000000101 /* ATAAccountEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0000000000000000000001 /* ATAAccountEditor.swift */; };
+		AE0000000000000000000102 /* ATAAccountEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0000000000000000000002 /* ATAAccountEditorView.swift */; };
+		AE0000000000000000000103 /* ATAAccountMutationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0000000000000000000003 /* ATAAccountMutationTests.swift */; };
 		AD0000000000000000000101 /* ATADashboardFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000000000000000000001 /* ATADashboardFeature.swift */; };
 		AD0000000000000000000102 /* ATADashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000000000000000000002 /* ATADashboardView.swift */; };
 		AD0000000000000000000103 /* ATADashboardFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000000000000000000003 /* ATADashboardFeatureTests.swift */; };
@@ -99,6 +102,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AE0000000000000000000001 /* ATAAccountEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAccountEditor.swift; sourceTree = "<group>"; };
+		AE0000000000000000000002 /* ATAAccountEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAccountEditorView.swift; sourceTree = "<group>"; };
+		AE0000000000000000000003 /* ATAAccountMutationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATAAccountMutationTests.swift; sourceTree = "<group>"; };
 		AD0000000000000000000001 /* ATADashboardFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATADashboardFeature.swift; sourceTree = "<group>"; };
 		AD0000000000000000000002 /* ATADashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATADashboardView.swift; sourceTree = "<group>"; };
 		AD0000000000000000000003 /* ATADashboardFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATADashboardFeatureTests.swift; sourceTree = "<group>"; };
@@ -247,6 +253,8 @@
 		AA0000000000000000000014 /* Dashboard */ = {
 			isa = PBXGroup;
 			children = (
+				AE0000000000000000000001 /* ATAAccountEditor.swift */,
+				AE0000000000000000000002 /* ATAAccountEditorView.swift */,
 				AD0000000000000000000001 /* ATADashboardFeature.swift */,
 				AD0000000000000000000002 /* ATADashboardView.swift */,
 				AA0000000000000000000103 /* DashboardFeature.swift */,
@@ -305,6 +313,7 @@
 		AA0000000000000000000019 /* CryptoPortfolioAdvisorTests */ = {
 			isa = PBXGroup;
 			children = (
+				AE0000000000000000000003 /* ATAAccountMutationTests.swift */,
 				AD0000000000000000000003 /* ATADashboardFeatureTests.swift */,
 				AC0000000000000000000007 /* ATAClientConcurrencyTests.swift */,
 				AC0000000000000000000008 /* ATAClientMutationTests.swift */,
@@ -603,6 +612,8 @@
 				AA0000000000000000000202 /* AppView.swift in Sources */,
 				AA0000000000000000000203 /* DashboardFeature.swift in Sources */,
 				AD0000000000000000000101 /* ATADashboardFeature.swift in Sources */,
+				AE0000000000000000000101 /* ATAAccountEditor.swift in Sources */,
+				AE0000000000000000000102 /* ATAAccountEditorView.swift in Sources */,
 				AD0000000000000000000102 /* ATADashboardView.swift in Sources */,
 				AA0000000000000000000204 /* DashboardView.swift in Sources */,
 				AA0000000000000000000214 /* DashboardDraftModels.swift in Sources */,
@@ -657,6 +668,7 @@
 				AA0000000000000000000213 /* DomainModelTests.swift in Sources */,
 				AA0000000000000000000216 /* DashboardFeatureTests.swift in Sources */,
 				AD0000000000000000000103 /* ATADashboardFeatureTests.swift in Sources */,
+				AE0000000000000000000103 /* ATAAccountMutationTests.swift in Sources */,
 				AA000000000000000000021C /* DashboardPersistenceTests.swift in Sources */,
 				AA000000000000000000021D /* PersistenceStoreTests.swift in Sources */,
 				AA0000000000000000000221 /* HistoryFeatureTests.swift in Sources */,
