@@ -3,14 +3,6 @@ import Foundation
 enum PortfolioAPIBuildEnvironment: Equatable, Sendable {
     case debug
     case release
-
-    static var current: Self {
-        #if DEBUG
-        .debug
-        #else
-        .release
-        #endif
-    }
 }
 
 enum PortfolioAPIConfigurationError: Error, Equatable, Sendable {
@@ -21,7 +13,7 @@ enum PortfolioAPIConfigurationError: Error, Equatable, Sendable {
 }
 
 enum PortfolioAPIConfiguration {
-    static let infoDictionaryKey = "CPA_BACKEND_BASE_URL"
+    // Retained for isolated legacy CPA tests; the active app never reads this configuration.
     static let developmentBaseURL = URL(string: "http://127.0.0.1:8000")!
     static let analysisRequestTimeout: TimeInterval = 120
 
@@ -30,19 +22,6 @@ enum PortfolioAPIConfiguration {
         configuration.timeoutIntervalForRequest = analysisRequestTimeout
         configuration.timeoutIntervalForResource = analysisRequestTimeout
         return URLSession(configuration: configuration)
-    }
-
-    static var currentBaseURL: URL {
-        do {
-            return try baseURL(
-                configuredValue: Bundle.main.object(
-                    forInfoDictionaryKey: infoDictionaryKey
-                ) as? String,
-                environment: .current
-            )
-        } catch {
-            fatalError("Invalid backend URL configuration: \(error)")
-        }
     }
 
     static func baseURL(
@@ -60,13 +39,13 @@ enum PortfolioAPIConfiguration {
         }
 
         guard let components = URLComponents(string: value),
-              let scheme = components.scheme?.lowercased(),
-              let host = components.host?.lowercased(),
-              components.user == nil,
-              components.password == nil,
-              components.query == nil,
-              components.fragment == nil,
-              let url = components.url
+            let scheme = components.scheme?.lowercased(),
+            let host = components.host?.lowercased(),
+            components.user == nil,
+            components.password == nil,
+            components.query == nil,
+            components.fragment == nil,
+            let url = components.url
         else {
             throw PortfolioAPIConfigurationError.invalidBaseURL
         }
@@ -103,7 +82,7 @@ enum PortfolioAPIResponseDecoder {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
 
-        guard (200 ... 299).contains(response.statusCode) else {
+        guard (200...299).contains(response.statusCode) else {
             let envelope = try? decoder.decode(PortfolioAPIErrorResponseDTO.self, from: data)
             throw PortfolioAPIClientError.server(
                 statusCode: response.statusCode,
@@ -125,11 +104,12 @@ enum PortfolioAPIResponseDecoder {
 
 extension PortfolioAnalysisClient {
     static func live(
-        baseURL: URL = PortfolioAPIConfiguration.currentBaseURL,
+        baseURL: URL,
         session: URLSession = PortfolioAPIConfiguration.makeAnalysisSession()
     ) -> Self {
         Self { snapshot in
-            let endpoint = baseURL
+            let endpoint =
+                baseURL
                 .appendingPathComponent("v1")
                 .appendingPathComponent("portfolio")
                 .appendingPathComponent("analyze")

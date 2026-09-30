@@ -1,10 +1,8 @@
 # Dependencies
 
-This directory contains dependency abstractions used by Features for external capabilities.
+The active app composes only `ATAClient` for authenticated portfolio/analysis HTTP operations and
+`CredentialStore` for Keychain-backed bearer credentials. ATA feature tests inject fakes.
 
-Phase 4 adds `PortfolioPersistenceClient`, a small async, Sendable-safe TCA dependency for
-loading and saving the current draft and immutable snapshots. The live SwiftData implementation
-is composed at the app root; tests inject controlled closures or an in-memory implementation.
-
-Phase 5 extends the same focused client with all-snapshot and ID-based snapshot reads. No generic
-repository abstraction is introduced.
+`PortfolioAnalysisClient` and `PortfolioPersistenceClient` remain for isolated CPA prototype
+source and tests. They are not registered at the app composition root, and their data is never an
+active ATA authority or fallback.

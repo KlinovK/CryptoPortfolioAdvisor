@@ -776,7 +776,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CPA_BACKEND_BASE_URL = "http://127.0.0.1:8000";
 				ATA_BACKEND_BASE_URL = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2UBDP9T662;
@@ -801,7 +800,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CPA_BACKEND_BASE_URL = "https://crypto-portfolio-advisor-api.onrender.com";
 				ATA_BACKEND_BASE_URL = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2UBDP9T662;

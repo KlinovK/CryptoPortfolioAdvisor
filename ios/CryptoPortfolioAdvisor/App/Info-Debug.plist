@@ -20,8 +20,6 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>CPA_BACKEND_BASE_URL</key>
-	<string>$(CPA_BACKEND_BASE_URL)</string>
 	<key>ATA_BACKEND_BASE_URL</key>
 	<string>$(ATA_BACKEND_BASE_URL)</string>
 	<key>LSRequiresIPhoneOS</key>

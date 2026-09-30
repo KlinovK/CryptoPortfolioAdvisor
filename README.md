@@ -1,134 +1,106 @@
 # CryptoPortfolioAdvisor
 
-An iOS crypto portfolio advisor that combines deterministic portfolio and risk calculations with
-validated, structured AI-assisted recommendations and immutable local history.
+An iOS interface for a personal, spot-only crypto portfolio advisor. Advanced Trading Advisor
+(ATA) is the authoritative backend and decision engine; this repository also retains the earlier
+CryptoPortfolioAdvisor (CPA) prototype for reference and legacy tests.
 
-**Stack:** Swift 6 · SwiftUI · TCA 1.26.2 · SwiftData · FastAPI · PostgreSQL · CoinGecko · OpenAI
-Structured Outputs · Render · Neon
+**Active iOS stack:** Swift 6 · SwiftUI · TCA 1.26.2 · Keychain · authenticated ATA HTTP V1
 
 > This is a portfolio/demo engineering project. It does not connect to exchanges, execute trades,
 > provide leverage, or represent production financial advice.
 
-## What it does
+## Current workflow
 
-The daily workflow is deliberately explicit and user-controlled:
+The Dashboard reads ATA's confirmed portfolio, accounts, financial settings, core-position
+policies, and limit orders. Account, policy, and order edits use revision-checked ATA mutations;
+only a complete server response replaces confirmed on-screen state. A filled external order is
+recorded only after the user supplies its actual post-fill holdings. The app never places the
+exchange order.
 
-1. Enter current crypto and stablecoin balances.
-2. Set trading constraints such as risk tolerance, reserve capital, and additional income.
-3. Add manually placed limit orders and track them as open, filled, or cancelled.
-4. Submit an immutable portfolio snapshot for analysis.
-5. Receive calculated metrics, risk warnings, market context, and structured recommended actions.
-6. Save the completed analysis on-device and revisit it through History and read-only details.
-
-The app is advisory only. Updating an order or receiving a recommendation never changes a balance
-or sends an instruction to an exchange.
+The History tab reads ATA's recent runs and dedicated latest completed analysis. Opening a run
+loads its detail by run UUID, preserving that run's historical snapshot identity. Recommendations,
+setups, and triggers are read-only decision support. ATA's scheduler produces analyses; the app
+has no Analyze Now or automatic trading control.
 
 ## Why this project is technically interesting
 
-- **Deterministic logic owns financial truth.** Portfolio valuation, allocations, available
-  capital, technical features, and risk rules are implemented in code—not delegated to an LLM.
-- **AI output is untrusted input.** OpenAI proposes typed actions over minimized context; the
-  deterministic `RiskEngine` independently validates every proposal before it can reach iOS.
-- **The contract is structured end to end.** Pydantic Structured Outputs, explicit DTO mapping,
-  snake_case JSON, and API contract tests keep model, backend, and Swift boundaries aligned.
-- **Retries are idempotent.** A stable snapshot UUID identifies one immutable request. PostgreSQL
-  coordination preserves the completed response across retries, restarts, and workers.
-- **Financial precision is explicit.** Swift and Python use `Decimal`; wire and persistence
-  boundaries use canonical decimal strings instead of binary floating point.
-- **Concurrency is modern and testable.** The iOS app uses Swift 6 complete concurrency checking,
-  TCA dependency injection, `async`/`await`, actors, and no Combine-based business logic.
-- **Failure is a designed state.** Bounded timeouts, typed errors, safe retry behavior, durable
-  persistence, and deterministic AI fallback keep failures visible without fabricating results.
-- **The full system is deployed.** A Release build has been exercised against Render, Neon,
-  CoinGecko, and OpenAI through the complete save/history/details workflow.
+- **One authority.** ATA owns confirmed portfolio and analysis state in PostgreSQL. The active
+  iOS app neither restores nor caches that state in legacy SwiftData.
+- **Explicit safety boundaries.** Expected revisions, one global mutation coordinator, server
+  response replacement, and reconciliation after uncertain outcomes prevent optimistic or
+  silently replayed writes.
+- **Typed transport.** ATA DTOs map directly to ATA read models with exact decimal strings and
+  strict enum handling; they do not pass through old CPA analysis models.
+- **Modern concurrency.** Swift 6 strict concurrency, TCA dependencies, and `async`/`await` make
+  reads, mutations, cancellation, and stale-response handling testable.
+- **Separated credentials.** The ATA bearer token is held in Keychain, not Info.plist or source.
+  Market data, AI, and deterministic risk validation belong to ATA, not iOS.
 
 ## Architecture
 
 ```mermaid
 flowchart LR
     User["User"] --> iOS["iOS App<br/>SwiftUI + TCA"]
-    iOS -->|"save snapshot / analysis"| Local[("SwiftData<br/>local history")]
-    iOS -->|"POST /v1/portfolio/analyze"| API["FastAPI"]
-    API --> Market["Market Data Provider<br/>CoinGecko"]
-    Market --> Features["Technical Feature<br/>Calculator"]
-    Features --> Portfolio["Portfolio<br/>Calculator"]
-    Portfolio --> Risk1["Risk Engine<br/>assessment"]
-    Risk1 --> AI["OpenAI<br/>Structured Output"]
-    AI --> Risk2["Risk Engine<br/>proposal validation"]
-    AI -. "unavailable / invalid" .-> Fallback["Deterministic fallback"]
-    Fallback --> Risk2
-    Risk2 --> DB[("PostgreSQL<br/>durable idempotency")]
-    DB --> API
-    API -->|"validated structured response"| iOS
+    iOS -->|"ATA HTTP V1 + bearer token"| ATA["Advanced Trading Advisor"]
+    iOS --> Keychain["Keychain credential"]
+    ATA --> DB[("PostgreSQL<br/>confirmed state and analyses")]
+    ATA --> Policy["Deterministic market, reserve,<br/>risk and plan validation"]
+    ATA --> AI["Optional OpenAI reasoning"]
+    Policy --> ATA
+    AI --> Policy
 ```
 
-The iOS feature layer depends on framework-independent Domain values and small async dependency
-interfaces. Data implements networking and SwiftData boundaries. On the backend, routes map HTTP
-DTOs, services orchestrate deterministic components, and infrastructure owns external providers
-and PostgreSQL. See [Architecture](docs/architecture.md) and the
-[API contract](docs/api.md) for the detailed boundaries.
+The active iOS feature layer depends on ATA domain values and injected async client/credential
+capabilities. The `backend/` directory and older architecture/API documents describe the retained
+CPA prototype, not the current ATA server. ATA lives in its separate repository.
 
 ## Key engineering decisions
 
 | Decision | Rationale |
 | --- | --- |
 | SwiftUI + TCA | Makes feature state, navigation, effects, and dependency injection explicit and reducer-testable. |
-| Swift 6 strict concurrency | Keeps asynchronous effects and SwiftData access actor-safe without callback queues. |
-| `Decimal`, not `Double` | Avoids binary floating-point behavior across financial calculation and storage boundaries. |
-| Immutable snapshots | Ensures a historical analysis always refers to the exact portfolio and constraints submitted. |
-| Deterministic `RiskEngine` | Keeps policy enforcement reviewable and prevents AI output from becoming authoritative. |
-| Structured LLM output | Constrains recommendations to typed, validated data rather than free-form operational commands. |
-| Backend-only OpenAI key | Keeps credentials and model integration outside the distributed iOS binary. |
-| Durable idempotency | Reuses a completed result for the same snapshot and detects conflicting payload reuse. |
-| Graceful AI fallback | Returns clearly labelled deterministic analysis when model reasoning is unavailable or rejected. |
-| Explicit network timeouts | Bounds CoinGecko, OpenAI, backend analysis, and iOS waiting while allowing for demo cold starts. |
+| Swift 6 strict concurrency | Keeps asynchronous effects and credential access actor-safe without callback queues. |
+| `Decimal`, not `Double` | Preserves exact financial values across the ATA transport and iOS domain boundary. |
+| Server-confirmed mutations | Replaces on-screen state only with an ATA response for the expected revision. |
+| Historical run identity | Keeps each analysis tied to its original run and snapshot, not the current Dashboard portfolio. |
+| Backend-only decision logic | Keeps market data, AI, reserve/risk policy, and execution-validity checks out of iOS. |
 
 ## Reliability and safety
 
-- There is no exchange integration, trade execution, or leverage execution.
-- AI-proposed actions cannot bypass deterministic risk validation.
-- Pydantic rejects malformed request shapes before analysis; Domain services enforce business
-  invariants separately.
-- Request retry reuses the same snapshot identity and payload rather than creating duplicate work.
-- OpenAI and market-provider failures map to safe errors or a clearly identified deterministic
-  fallback where possible.
-- Logs and error responses exclude portfolio payloads, raw prompts, provider responses, and keys.
-- Secrets are supplied through environment variables and are not stored in the repository or iOS
-  application.
+- There is no exchange connection, order execution, leverage control, or Analyze Now action.
+- ATA portfolio writes are revision-checked; uncertain outcomes require reload and user review,
+  never automatic mutation replay.
+- Missing configuration, missing credentials, transport errors, and unauthorized responses are
+  explicit UI states. Stale reads cannot replace newer accepted state.
+- The bearer token lives in Keychain. No API key, token, or provider credential is in app source
+  or Info.plist.
+- Legacy CPA SwiftData and its client remain only for old source/tests and existing on-disk data;
+  the active app does not open the store or connect to the CPA backend.
 
 ## Testing
 
-- **iOS:** 108 passing tests covering reducers, Domain validation, SwiftData persistence, API DTOs,
-  navigation, submission lifecycle, timeout/error mapping, and retry behavior.
-- **Backend:** a comprehensive offline-first pytest suite covering portfolio calculation, technical
-  features, risk filtering, structured AI output, provider failures, database idempotency, and API
-  contracts.
-- **Regression boundaries:** decimal-string serialization, nullable order fields, malformed
-  responses, snapshot identity, idempotency conflicts, and fallback behavior have focused coverage.
-- **Manual Release E2E:** verified from iOS Release → Render → CoinGecko → OpenAI → RiskEngine →
-  Neon → iOS persistence → History → Details.
+- **iOS:** offline reducer, client, mapping, credential, security, and retained legacy tests cover
+  the ATA cutover and historical CPA behavior.
+- **ATA backend:** maintained and tested in its separate repository; it is not the `backend/`
+  directory here.
 
-No normal automated test sends live CoinGecko or OpenAI traffic.
+The iOS unit suite uses fake clients and does not contact ATA, CoinGecko, OpenAI, or an exchange.
 
 ## Deployment
 
-The portfolio staging environment uses:
+Set the non-secret `ATA_BACKEND_BASE_URL` build setting for the chosen Debug or Release build.
+It is empty by default, producing an explicit configuration-unavailable state. Debug may target a
+local ATA HTTP service; Release requires a non-local HTTPS ATA origin. Neither build uses a CPA URL
+fallback. The user supplies the ATA bearer credential in the app, where it is stored in Keychain.
 
-- **Render Free** for the FastAPI service. It may cold-start after idle, so bounded client and
-  backend timeouts account for demo wake-up latency.
-- **Neon PostgreSQL** for durable analysis idempotency.
-- **CoinGecko Demo/live market data** for current prices and OHLC history; technical indicators are
-  calculated by backend code.
-- **OpenAI** from the backend only, using Structured Outputs and minimized calculated context.
-- An HTTPS-only iOS Release endpoint:
-  [`https://crypto-portfolio-advisor-api.onrender.com`](https://crypto-portfolio-advisor-api.onrender.com).
+The older CPA FastAPI demo and its Render deployment remain in `backend/` and legacy documentation,
+but are not connected to the active iOS app. Current ATA server deployment and PostgreSQL
+operations are managed in the separate ATA repository.
 
-Debug continues to use `http://127.0.0.1:8000`. Non-Debug builds require HTTPS and reject HTTP and
-loopback hosts. Deployment configuration, migrations, health checks, cleanup, and verification are
-documented in [Deployment](docs/deployment.md) and the
-[deployment runbook](docs/deployment-runbook.md).
+## Earlier CPA prototype screenshots
 
-## Screenshots
+These images document the earlier CPA demo interface, not the current ATA-backed Dashboard and
+History.
 
 <table>
   <thead>
@@ -147,7 +119,7 @@ documented in [Deployment](docs/deployment.md) and the
     <tr>
       <td><sub>Balances, constraints, and manually tracked orders.</sub></td>
       <td><sub>Validated recommendations, risk, and analysis source.</sub></td>
-      <td><sub>Immutable completed analyses saved locally.</sub></td>
+      <td><sub>Earlier locally saved analysis history.</sub></td>
     </tr>
   </tbody>
 </table>
@@ -156,15 +128,15 @@ documented in [Deployment](docs/deployment.md) and the
 
 ```text
 CryptoPortfolioAdvisor/
-├── ios/          # SwiftUI/TCA app, Domain models, URLSession client, SwiftData, tests
-├── backend/      # FastAPI service, calculators, RiskEngine, providers, persistence, tests
-├── contracts/    # Platform-neutral structured analysis JSON schema
-└── docs/         # Architecture, API, deployment, privacy, and release documentation
+├── ios/          # Active ATA-backed SwiftUI/TCA app plus retained CPA source/tests
+├── backend/      # Earlier CPA FastAPI prototype, not the active iOS backend
+├── contracts/    # Earlier CPA analysis schema
+└── docs/         # Earlier CPA architecture, deployment, and presentation material
 ```
 
 ## Local setup
 
-### Backend
+### Earlier CPA backend (not required for the active iOS app)
 
 Requires Python 3.13. Local development defaults to static market data and in-memory idempotency,
 so provider credentials are not required for the offline test suite.
@@ -198,17 +170,17 @@ xcodebuild \
   test
 ```
 
-The Debug scheme connects to the local backend at `127.0.0.1:8000`. The shared
-`CryptoPortfolioAdvisor-Release` scheme runs the existing HTTPS Release configuration for manual
-staging validation. See the [iOS guide](ios/README.md) for build and architecture details.
+The normal scheme runs Debug; `CryptoPortfolioAdvisor-Release` runs Release for manual validation.
+Neither scheme supplies an ATA endpoint until `ATA_BACKEND_BASE_URL` is configured. See the
+[iOS guide](ios/README.md) for the active boundary and retained legacy-code details.
 
 ## Status
 
-- Core development is complete.
-- The production-style portfolio/demo deployment is working on Render and Neon.
-- The full Release end-to-end workflow has been manually verified.
-- App Store and TestFlight publication are intentionally outside the current portfolio scope.
+- The active iOS Dashboard and History have been cut over to authenticated ATA HTTP V1.
+- The earlier CPA implementation and data remain available to legacy tests but are not app
+  runtime authorities.
+- Manual ATA environment configuration and credential entry are required before live use.
+- App Store and TestFlight publication are outside this cleanup step.
 
-Further technical detail is available in the [architecture](docs/architecture.md),
-[API](docs/api.md), [privacy data flow](docs/privacy-data-flow.md), and
-[release checklist](docs/release-checklist.md).
+The [iOS guide](ios/README.md) describes the active application. The older
+[architecture](docs/architecture.md) and [API](docs/api.md) documents describe the CPA prototype.

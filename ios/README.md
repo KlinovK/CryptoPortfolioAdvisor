@@ -1,13 +1,12 @@
 # iOS application
 
-Step 9H makes the active Dashboard and History server-backed views of Advanced Trading Advisor
-(ATA) portfolio with account, financial/core-policy, and limit-order lifecycle editing.
-`GET /v1/portfolio` and complete successful mutation responses are its only confirmed-state
-sources. The former CPA editor,
-autosave, and Analyze flow remain in the source tree for legacy coverage but are no longer in app
-navigation. The active History uses authenticated ATA recent/latest/detail reads; local CPA analyses
-remain on disk for legacy coverage but are not displayed or used as a fallback. The app
-does not execute trades.
+The active Dashboard and History use authenticated Advanced Trading Advisor (ATA) HTTP V1.
+`GET /v1/portfolio` and complete successful mutation responses are the only confirmed-portfolio
+sources; ATA recent/latest/detail reads are the only active analysis-history sources. The app
+composition root creates only ATA client and Keychain credential dependencies. It does not create
+a legacy SwiftData ModelContainer or CPA analysis client. The older CPA editor, persistence, and
+networking source remain for legacy tests and existing on-disk data, but are not reachable from
+`AppFeature` or `AppView`. The app does not execute trades.
 
 ## Configuration
 
@@ -18,23 +17,19 @@ does not execute trades.
 - Deployment target: iOS 18 or later
 - UI: SwiftUI
 - State management: The Composable Architecture 1.26.2 or a compatible 1.x update
-- Persistence: SwiftData, configured at the application composition root
-- Debug backend: `CPA_BACKEND_BASE_URL=http://127.0.0.1:8000`
-- Release backend:
-  `CPA_BACKEND_BASE_URL=https://crypto-portfolio-advisor-api.onrender.com`
+- Active persistence authority: ATA server PostgreSQL; iOS keeps presentation state in memory
+- Credential storage: Keychain
 - ATA backend: set the separate, non-secret `ATA_BACKEND_BASE_URL` app-target build setting for
-  each configuration before using the ATA Dashboard. Both configurations default to empty and
-  show a configuration state; neither falls back to the CPA URL. The setting is copied into the
+  each configuration before using the app. Both configurations default to empty and show a
+  configuration state; neither falls back to a CPA URL. The setting is copied into the
   corresponding Info.plist. Release accepts only a non-local HTTPS ATA URL. Debug may use a
   local HTTP ATA service under its existing local-network allowance. Do not put credentials in
   build settings, scheme arguments, or Info.plist.
 - Temporary app bundle identifier: `com.example.CryptoPortfolioAdvisor`
 
-`PortfolioAPIConfiguration` reads the CPA build-setting-backed Info.plist key. Release accepts only HTTPS
-and rejects localhost/loopback. Debug alone has `NSAllowsLocalNetworking`; Release has no insecure
-ATS exception. The Release URL targets the approved Render staging deployment. Replace the bundle
-identifier only after its real value is approved, then verify the signed build against the
-staging-first deployment runbook.
+There is no active `CPA_BACKEND_BASE_URL` build setting or Info.plist key. Debug alone has
+`NSAllowsLocalNetworking`; Release has no insecure ATS exception. The active ATA client rejects
+local or non-HTTPS Release URLs. No production ATA URL is hardcoded.
 
 No separate Staging Xcode configuration is added in Phase 12. Until a real staging hostname and
 signing workflow exist, another project configuration would duplicate unresolved settings. An
@@ -68,7 +63,7 @@ IDs are displayed as historical context and are never replaced by the current Da
 snapshot. Refresh is manual; credential changes clear prior analysis presentation. There is no
 local CPA fallback, analysis cache, or Analyze Now action.
 
-## Legacy CPA Dashboard and submission (inactive)
+## Retained legacy CPA Dashboard and submission (inactive, test/reference only)
 
 Dashboard editing uses feature-level `AssetPositionDraft`, `TradingConstraintsDraft`, and
 `LimitOrderDraft` values. Financial fields remain raw `String` values while the user types, so
@@ -93,9 +88,9 @@ Filled or Cancelled receives a resolution timestamp; changing it back to Open cl
 No status change mutates the portfolio—the user is explicitly reminded to update balances after a
 fill. Leverage-off is labeled as spot only.
 
-## Legacy CPA backend connection (inactive from Dashboard)
+## Retained legacy CPA backend connection (inactive, test/reference only)
 
-Start the service from `backend/` before running the app:
+To exercise the older CPA backend independently, start it from `backend/`:
 
 ```bash
 source .venv/bin/activate
@@ -103,11 +98,8 @@ python -m pip install -e '.[dev]'
 uvicorn app.main:app --reload
 ```
 
-An iOS Simulator can reach the host service at `http://127.0.0.1:8000`. The URL is centralized in
-the app target build setting and validated by `PortfolioAPIConfiguration`. The Debug
-Info.plist permits local-network HTTP for this workflow; Release does not include that exception.
-A future production-host change must update the central HTTPS build setting rather than broadening
-ATS.
+The old client is retained for isolated legacy tests and requires an explicit URL when constructed.
+It is not registered by the active app and its CPA URL is not in app build settings or Info.plist.
 
 The API implementation uses URLSession `data(for:)` with dedicated, bounded 120-second request and
 resource timeouts that allow for staging cold start plus the backend's 45-second total analysis
@@ -147,9 +139,9 @@ into Features. The snapshot and its analysis remain independently readable throu
 On restoration, a saved draft takes precedence. If it is absent, the latest snapshot seeds fresh
 editable state. Loading or saving failures leave the in-memory Dashboard usable.
 
-## Analysis history and details
+## Retained legacy CPA analysis history and details (inactive)
 
-History loads completed `PortfolioAnalysis` values through the persistence capability. Results
+The legacy `HistoryFeature` loads completed `PortfolioAnalysis` values through the persistence capability. Results
 are ordered by `generatedAt` descending and UUID string ascending for timestamp ties. A saved
 snapshot without a completed analysis is not shown as a successful result.
 
@@ -157,10 +149,9 @@ Rows show the analysis date, total value, risk level, action count, and full ana
 Selecting a row sends the already-loaded immutable analysis into TCA-owned optional navigation.
 Details are read-only and decisions-first: source and risk appear before priority-ordered actions
 and severity-ordered, de-duplicated warnings; metrics, allocations, market context, and asset
-observations follow. The fallback label always says deterministic analysis was used. Phase 5
-snapshot persistence/details
-remain available for restoration and future linked context, but the main History tab means
-completed analyses.
+observations follow. The fallback label always says deterministic analysis was used. Snapshot
+persistence/details remain compiled for historical data compatibility and legacy tests; the
+active History tab uses ATA instead.
 
 Action priorities are a presentation-only deterministic mapping: values 1–2 display as High,
 3 as Medium, and 4 or above as Low. The stored/backend priority is unchanged. Warnings sort
@@ -171,7 +162,7 @@ Display formatting never converts financial `Decimal` values to `Double`. USD to
 currency precision, quantities retain useful fractional precision, percentages have a `%` suffix,
 and a tiny nonzero value is never presented as zero. Stored and transported values remain exact.
 
-## Accessibility and user transparency
+## Legacy CPA accessibility and user transparency (inactive screens)
 
 The MVP uses semantic system colors, Dynamic Type, native controls, textual labels in addition to
 icons/color, VoiceOver labels for errors and status, and scrollable layouts that remain usable on
@@ -182,9 +173,9 @@ execute trades, and leaves decisions with the user. Dashboard also explains that
 portfolio data is sent to the backend, no exchange credentials are used, and optional AI receives
 only minimized calculated context without raw candles or personal identifiers.
 
-## Domain and boundaries
+## Legacy CPA domain and boundaries
 
-Domain contains immutable value types for portfolios, constraints, manually tracked limit
+The retained CPA Domain contains immutable value types for portfolios, constraints, manually tracked limit
 orders, snapshots, and structured analyses. `AssetSymbol` is open-ended and normalizes values such
 as LINK to uppercase. Financial quantities, prices, USD values, and percentages use `Decimal`.
 

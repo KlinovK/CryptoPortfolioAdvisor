@@ -1,36 +1,24 @@
 import ComposableArchitecture
-import SwiftData
 import SwiftUI
 
 @main
 struct CryptoPortfolioAdvisorApp: App {
-    private let modelContainer: ModelContainer
     private let store: StoreOf<AppFeature>
 
     init() {
-        do {
-            let modelContainer = try PersistenceContainerFactory.makeModelContainer()
-            let ata = Self.configureATA()
-            self.modelContainer = modelContainer
-            self.store = Store(
-                initialState: AppFeature.State(
-                    dashboard: ATADashboardFeature.State(configurationAvailable: ata != nil),
-                    history: ATAHistoryFeature.State(configurationAvailable: ata != nil)
-                )
-            ) {
-                AppFeature()
-            } withDependencies: {
-                $0.portfolioAnalysis = .live(
-                    baseURL: PortfolioAPIConfiguration.currentBaseURL
-                )
-                $0.portfolioPersistence = .live(modelContainer: modelContainer)
-                if let ata {
-                    $0.ataCredentials = ata.credentials
-                    $0.ataClient = ata.client
-                }
+        let ata = Self.configureATA()
+        self.store = Store(
+            initialState: AppFeature.State(
+                dashboard: ATADashboardFeature.State(configurationAvailable: ata != nil),
+                history: ATAHistoryFeature.State(configurationAvailable: ata != nil)
+            )
+        ) {
+            AppFeature()
+        } withDependencies: {
+            if let ata {
+                $0.ataCredentials = ata.credentials
+                $0.ataClient = ata.client
             }
-        } catch {
-            fatalError("Unable to configure local persistence: \(error)")
         }
     }
 
@@ -56,7 +44,6 @@ struct CryptoPortfolioAdvisorApp: App {
     var body: some Scene {
         WindowGroup {
             AppView(store: store)
-                .modelContainer(modelContainer)
         }
     }
 }

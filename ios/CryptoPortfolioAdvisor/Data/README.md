@@ -1,13 +1,9 @@
 # Data
 
-This directory contains data-layer implementations that depend inward on Domain models.
+The active `API/ATA/` layer implements authenticated ATA HTTP V1 and maps strict transport DTOs
+to ATA domain models. `Credentials/` stores the bearer token in Keychain. Neither layer uses the
+older CPA analysis types.
 
-Phase 4 adds the SwiftData persistence implementation under `Persistence/`. SwiftData entities
-remain internal to that boundary and are explicitly mapped to plain persisted draft values or
-Domain snapshots. A `ModelActor` owns its `ModelContext`, so contexts and model objects do not
-cross arbitrary tasks.
-
-Phase 5 adds complete and ID-based snapshot queries. Complete results are sorted newest first,
-with UUID as a deterministic secondary key, before leaving the persistence boundary.
-
-No networking implementation exists yet.
+`API/` outside `ATA/` and `Persistence/` are retained CPA prototype implementations for legacy
+tests and existing on-disk SwiftData compatibility. The active app does not construct their
+client or ModelContainer, read their data, or use them as an ATA fallback.
