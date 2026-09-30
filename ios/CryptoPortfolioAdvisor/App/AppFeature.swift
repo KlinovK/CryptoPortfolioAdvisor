@@ -10,13 +10,13 @@ struct AppFeature {
     @ObservableState
     struct State: Equatable {
         var dashboard = ATADashboardFeature.State()
-        var history = HistoryFeature.State()
+        var history = ATAHistoryFeature.State()
         var selectedTab: Tab = .dashboard
     }
 
     enum Action: Equatable {
         case dashboard(ATADashboardFeature.Action)
-        case history(HistoryFeature.Action)
+        case history(ATAHistoryFeature.Action)
         case selectedTabChanged(Tab)
     }
 
@@ -26,7 +26,7 @@ struct AppFeature {
         }
 
         Scope(state: \.history, action: \.history) {
-            HistoryFeature()
+            ATAHistoryFeature()
         }
 
         Reduce { state, action in
@@ -34,6 +34,9 @@ struct AppFeature {
             case .selectedTabChanged(let tab):
                 state.selectedTab = tab
                 return .none
+
+            case .dashboard(.credentialSaveRequested), .dashboard(.credentialDeleteRequested):
+                return .send(.history(.credentialContextChanged))
 
             case .dashboard, .history:
                 return .none

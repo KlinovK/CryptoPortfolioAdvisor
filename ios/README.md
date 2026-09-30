@@ -1,11 +1,12 @@
 # iOS application
 
-Step 9G makes the active Dashboard a server-backed view of the confirmed Advanced Trading Advisor
+Step 9H makes the active Dashboard and History server-backed views of Advanced Trading Advisor
 (ATA) portfolio with account, financial/core-policy, and limit-order lifecycle editing.
 `GET /v1/portfolio` and complete successful mutation responses are its only confirmed-state
 sources. The former CPA editor,
 autosave, and Analyze flow remain in the source tree for legacy coverage but are no longer in app
-navigation. History still displays locally saved CPA analyses pending a separate cutover. The app
+navigation. The active History uses authenticated ATA recent/latest/detail reads; local CPA analyses
+remain on disk for legacy coverage but are not displayed or used as a fallback. The app
 does not execute trades.
 
 ## Configuration
@@ -57,6 +58,15 @@ expired through ATA; confirming an external fill requires the complete actual po
 of the owning account and an explicit USDT/USDC settlement choice. None of these actions executes
 an exchange trade. An uninitialized server is shown explicitly; old CPA drafts are never uploaded
 or treated as confirmed state.
+
+## Active ATA History
+
+History loads at most 20 recent ATA run summaries in server order and separately requests the
+latest completed analysis. Selecting a run loads its full detail by run UUID. A run without a
+result shows status and failure metadata without invented recommendations. Historical snapshot
+IDs are displayed as historical context and are never replaced by the current Dashboard
+snapshot. Refresh is manual; credential changes clear prior analysis presentation. There is no
+local CPA fallback, analysis cache, or Analyze Now action.
 
 ## Legacy CPA Dashboard and submission (inactive)
 

@@ -36,16 +36,33 @@ final class AppFeatureTests: XCTestCase {
     func testHistoryActionIsRoutedToChildReducer() async {
         let store = TestStore(initialState: AppFeature.State()) {
             AppFeature()
-        } withDependencies: {
-            $0.portfolioPersistence = .noop
         }
 
         await store.send(.history(.appeared)) {
             $0.history.hasAppeared = true
-            $0.history.loadState = .loading
+            $0.history.listGeneration = 1
+            $0.history.latestGeneration = 1
+            $0.history.selectionGeneration = 1
+            $0.history.loadState = .configurationUnavailable
         }
-        await store.receive(.history(.loadFinished(.success([])))) {
-            $0.history.loadState = .loaded
+    }
+
+    func testDashboardCredentialDeletionInvalidatesActiveHistoryContext() async {
+        var initial = AppFeature.State()
+        initial.dashboard.configurationAvailable = true
+        initial.history.configurationAvailable = true
+        initial.history.loadState = .loaded
+        initial.history.hasAppeared = true
+        let store = TestStore(initialState: initial) {
+            AppFeature()
+        } withDependencies: {
+            $0.ataCredentials.delete = { throw CredentialStoreError.tokenAbsent }
         }
+        store.exhaustivity = .off
+        await store.send(.dashboard(.credentialDeleteRequested))
+        await store.receive(.history(.credentialContextChanged))
+        XCTAssertEqual(store.state.history.loadState, .credentialRequired)
+        XCTAssertFalse(store.state.history.hasAppeared)
+        await store.finish()
     }
 }

@@ -14,7 +14,8 @@ struct CryptoPortfolioAdvisorApp: App {
             self.modelContainer = modelContainer
             self.store = Store(
                 initialState: AppFeature.State(
-                    dashboard: ATADashboardFeature.State(configurationAvailable: ata != nil)
+                    dashboard: ATADashboardFeature.State(configurationAvailable: ata != nil),
+                    history: ATAHistoryFeature.State(configurationAvailable: ata != nil)
                 )
             ) {
                 AppFeature()

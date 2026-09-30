@@ -14,7 +14,7 @@ struct AppView: View {
             }
             .tag(AppFeature.Tab.dashboard)
 
-            HistoryView(
+            ATAHistoryView(
                 store: store.scope(state: \.history, action: \.history)
             )
             .tabItem {
