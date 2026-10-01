@@ -135,7 +135,9 @@ struct ATAOrderEditorView: View {
                 "Target price (USD)",
                 text: Binding(
                     get: { store.orderEditor?.targetPrice ?? "" },
-                    set: { store.send(.orderTargetPriceChanged($0)) }
+                    set: {
+                        store.send(.orderTargetPriceChanged(ATAEditableDecimalText.normalized($0)))
+                    }
                 )
             )
             .keyboardType(.decimalPad)
@@ -144,7 +146,9 @@ struct ATAOrderEditorView: View {
                 "Quantity (asset units)",
                 text: Binding(
                     get: { store.orderEditor?.quantityAsset ?? "" },
-                    set: { store.send(.orderQuantityChanged($0)) }
+                    set: {
+                        store.send(.orderQuantityChanged(ATAEditableDecimalText.normalized($0)))
+                    }
                 )
             )
             .keyboardType(.decimalPad)
@@ -206,13 +210,21 @@ struct ATAOrderEditorView: View {
                                     store.orderEditor?.holdings.first(where: { $0.id == row.id })?
                                         .amount ?? ""
                                 },
-                                set: { store.send(.orderHoldingAmountChanged(row.id, $0)) }
+                                set: {
+                                    store.send(
+                                        .orderHoldingAmountChanged(
+                                            row.id, ATAEditableDecimalText.normalized($0)))
+                                }
                             )
                         )
                         .keyboardType(.decimalPad)
+                        .accessibilityLabel(
+                            "Quantity for \(row.symbol.isEmpty ? "new holding" : row.symbol)")
                         Button("Remove Row", role: .destructive) {
                             store.send(.orderHoldingRemoved(row.id))
                         }
+                        .accessibilityLabel(
+                            "Remove \(row.symbol.isEmpty ? "new holding" : row.symbol) holding")
                     }
                 }
                 Button("Add Holding", systemImage: "plus") {

@@ -131,13 +131,21 @@ struct ATAAccountEditorView: View {
                                 store.editor?.holdings.first(where: { $0.id == row.id })?.amount
                                     ?? ""
                             },
-                            set: { store.send(.holdingAmountChanged(row.id, $0)) }
+                            set: {
+                                store.send(
+                                    .holdingAmountChanged(
+                                        row.id, ATAEditableDecimalText.normalized($0)))
+                            }
                         )
                     )
                     .keyboardType(.decimalPad)
+                    .accessibilityLabel(
+                        "Quantity for \(row.symbol.isEmpty ? "new holding" : row.symbol)")
                     Button("Remove Row", role: .destructive) {
                         store.send(.holdingRemoved(row.id))
                     }
+                    .accessibilityLabel(
+                        "Remove \(row.symbol.isEmpty ? "new holding" : row.symbol) holding")
                 }
             }
             Button("Add Holding", systemImage: "plus") {
@@ -148,7 +156,7 @@ struct ATAAccountEditorView: View {
             Text("Complete account holdings")
         } footer: {
             Text(
-                "Save replaces this account's complete holdings list. Use 0 or remove a row to omit a holding. Use a period for decimals; no trades are executed."
+                "Save replaces this account's complete holdings list. Use 0 or remove a row to omit a holding. Use your keyboard's decimal separator; no trades are executed."
             )
         }
     }

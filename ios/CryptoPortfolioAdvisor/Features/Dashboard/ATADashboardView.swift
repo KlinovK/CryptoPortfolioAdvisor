@@ -293,6 +293,7 @@ struct ATADashboardView: View {
                         }
                     }
                     .disabled(!store.canSubmitAccountMutation)
+                    .accessibilityLabel("Actions for \(account.name) account")
                     .accessibilityIdentifier("ataAccountActions_\(account.id.uuidString)")
                 }
                 .padding(.vertical, 4)
@@ -360,6 +361,9 @@ struct ATADashboardView: View {
                             Button("Confirm External Fill") {
                                 store.send(.confirmExternalFillTapped(order.id))
                             }
+                            .accessibilityHint(
+                                "Reconcile a trade already executed externally; no exchange order is placed."
+                            )
                             Button("Cancel Order", role: .destructive) {
                                 store.send(.orderLifecycleTapped(order.id, .cancel))
                             }
@@ -368,6 +372,9 @@ struct ATADashboardView: View {
                             }
                         }
                         .disabled(!store.canSubmitPortfolioMutation)
+                        .accessibilityLabel(
+                            "Actions for \(order.side.rawValue.uppercased()) \(order.asset.rawValue) order"
+                        )
                         .accessibilityIdentifier("ataOrderActions_\(order.id.uuidString)")
                     }
                 }

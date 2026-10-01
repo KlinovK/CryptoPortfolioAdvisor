@@ -46,10 +46,12 @@ refresh or retry a read. Failed refreshes leave the last successfully loaded ser
 visible with a stale-data notice. Late GET responses are ignored using request generations.
 Server revision and account-level holdings, aggregate holdings, financial settings, core
 positions, and limit orders are displayed without local valuation. Account, policy, and order edits
-are transient drafts, submitted with the current server revision; only the complete server response
-confirms a change. Revision conflicts and uncertain outcomes require a fresh server read and
-manual review, never an automatic replay. Open limit orders can be created, cancelled, or
-expired through ATA; confirming an external fill requires the complete actual post-fill holdings
+are transient drafts. Decimal-keyboard input uses the device's decimal separator at the text
+boundary; strict, exact decimal strings are still sent to ATA. Edits use the current server
+revision, and only the complete server response confirms a change. Revision conflicts and
+uncertain outcomes require a fresh server read and manual review, never an automatic replay.
+Open limit orders can be created, cancelled, or expired through ATA; confirming an external fill
+requires the complete actual post-fill holdings
 of the owning account and an explicit USDT/USDC settlement choice. None of these actions executes
 an exchange trade. An uninitialized server is shown explicitly; old CPA drafts are never uploaded
 or treated as confirmed state.

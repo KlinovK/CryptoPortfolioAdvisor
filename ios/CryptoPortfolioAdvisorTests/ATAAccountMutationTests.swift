@@ -59,6 +59,22 @@ final class ATAAccountMutationTests: XCTestCase {
             "0.12345678901234567890123456789012345678")
     }
 
+    func testLocalizedDecimalKeyboardNormalizesOnlyEditableText() throws {
+        let input = "0,12345678901234567890123456789012345678"
+        let normalized = ATAEditableDecimalText.normalized(input, decimalSeparator: ",")
+        XCTAssertEqual(normalized, "0.12345678901234567890123456789012345678")
+        XCTAssertEqual(try ATADecimalCodec.encode(ATADecimalCodec.decode(normalized)), normalized)
+        XCTAssertEqual(ATAEditableDecimalText.normalized(input, decimalSeparator: "."), input)
+        XCTAssertThrowsError(try ATADecimalCodec.decode(input))
+        for malformed in [
+            "1,2,3", "1,2.3", "1e3", "0,1234567890123456789012345678901234567890123456789",
+        ] {
+            XCTAssertThrowsError(
+                try ATADecimalCodec.decode(
+                    ATAEditableDecimalText.normalized(malformed, decimalSeparator: ",")))
+        }
+    }
+
     func testEditorRejectsDuplicateMalformedAndNegativePositions() throws {
         let duplicate = ATAAccountEditor(
             kind: .create,
@@ -481,10 +497,14 @@ final class ATAAccountMutationTests: XCTestCase {
         let returned = response(current, revision: 8)
         let nextContext = response(current, revision: 3)
         let gate = DeferredPortfolio()
+        let writes = LockIsolated(0)
         let store = TestStore(initialState: loaded(current)) {
             ATADashboardFeature()
         } withDependencies: {
-            $0.ataClient.createAccount = { _ in await gate.wait() }
+            $0.ataClient.createAccount = { _ in
+                writes.withValue { $0 += 1 }
+                return await gate.wait()
+            }
             $0.ataClient.loadPortfolio = { nextContext }
             $0.ataCredentials.save = { _ in }
             $0.ataCredentials.load = { try ATABearerToken("new-synthetic-token") }
@@ -493,24 +513,41 @@ final class ATAAccountMutationTests: XCTestCase {
         await store.send(.createAccountTapped)
         await store.send(.editorNameChanged("Old context draft"))
         await store.send(.editorSubmitTapped)
+        await gate.waitUntilStarted()
         await store.send(.credentialSaveRequested(try ATABearerToken("new-synthetic-token")))
         XCTAssertNil(store.state.portfolio)
         XCTAssertNil(store.state.editor)
+        XCTAssertTrue(store.state.reconciliationRequired)
+        XCTAssertFalse(store.state.canSubmitPortfolioMutation)
+        XCTAssertEqual(writes.value, 1)
+        // The mock continuation does not cooperate with cancellation; release it so
+        // the cancelled effect can finish before the replacement credential loads.
+        await gate.resolve(returned)
         await store.receive(.credentialSaved(generation: 2, succeeded: true))
         await store.receive(.loadFinished(generation: 3, result: .loaded(nextContext)))
         await store.send(.mutationFinished(generation: 1, result: .succeeded(returned)))
         XCTAssertEqual(store.state.portfolio, nextContext)
-        await gate.resolve(returned)
+        XCTAssertEqual(writes.value, 1)
     }
 }
 
 private actor DeferredPortfolio {
     private var value: ATACurrentPortfolio?
     private var waiter: CheckedContinuation<ATACurrentPortfolio, Never>?
+    private var started = false
+    private var startWaiter: CheckedContinuation<Void, Never>?
 
     func wait() async -> ATACurrentPortfolio {
+        started = true
+        startWaiter?.resume()
+        startWaiter = nil
         if let value { return value }
         return await withCheckedContinuation { waiter = $0 }
+    }
+
+    func waitUntilStarted() async {
+        if started { return }
+        await withCheckedContinuation { startWaiter = $0 }
     }
 
     func resolve(_ portfolio: ATACurrentPortfolio) {

@@ -8,9 +8,10 @@ struct ATAKeychainNamespace: Equatable, Sendable {
     init(configuredBaseURL: String?, environment: ATAAPIEnvironment) throws {
         let url = try ATAAPIConfiguration.baseURL(
             configuredValue: configuredBaseURL, environment: environment)
-        let components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        let scheme = components.scheme!.lowercased()
-        let host = components.host!.lowercased()
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+            let scheme = components.scheme?.lowercased(),
+            let host = components.host?.lowercased()
+        else { throw ATAAPIConfigurationError.invalidBaseURL }
         let port = components.port ?? (scheme == "https" ? 443 : 80)
         // Distinct from CPA and scoped to the approved ATA origin, not a global bearer slot.
         account = "bearer:\(scheme)://\(host):\(port)"

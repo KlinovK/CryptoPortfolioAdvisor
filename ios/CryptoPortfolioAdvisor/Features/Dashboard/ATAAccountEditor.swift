@@ -1,5 +1,14 @@
 import Foundation
 
+// Editable text only: wire decoding remains locale-independent and strict.
+enum ATAEditableDecimalText {
+    static func normalized(
+        _ text: String, decimalSeparator: String = Locale.current.decimalSeparator ?? "."
+    ) -> String {
+        decimalSeparator == "," ? text.replacingOccurrences(of: ",", with: ".") : text
+    }
+}
+
 // Text and row UUIDs exist only in transient UI state; account identity is the server UUID.
 struct ATAHoldingDraft: Equatable, Identifiable, Sendable {
     let id: UUID

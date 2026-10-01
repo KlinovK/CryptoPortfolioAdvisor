@@ -85,7 +85,9 @@ struct ATAPolicyEditorView: View {
                         : store.policyEditor?.secondValue ?? ""
                 },
                 set: {
-                    store.send(first ? .policyFirstValueChanged($0) : .policySecondValueChanged($0))
+                    let text = ATAEditableDecimalText.normalized($0)
+                    store.send(
+                        first ? .policyFirstValueChanged(text) : .policySecondValueChanged(text))
                 }
             )
         )
